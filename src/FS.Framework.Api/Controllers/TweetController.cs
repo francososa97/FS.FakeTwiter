@@ -1,39 +1,67 @@
-﻿using FS.FakeTwitter.Application.Interfaces.Tweets;
-using FS.FakeTwitter.Application.DTOs;
+﻿using FS.FakeTwiter.Application.Features.Tweet.Commands.PostTweetCommand;
+using FS.FakeTwitter.Application.Features.Tweets.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using FS.FakeTwiter.Application.Interfaces.Tweets;
 
 namespace FS.FakeTwitter.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Produces("application/json")]
 public class TweetController : ControllerBase
 {
-    private readonly ITweetService _tweetService;
+    private readonly IMediator _mediator;
 
-    public TweetController(ITweetService tweetService)
+    public TweetController(IMediator mediator)
     {
-        _tweetService = tweetService;
+        _mediator = mediator;
     }
 
+    /// <summary>
+    /// Publica un nuevo tweet.
+    /// </summary>
+    /// <param name="command">Datos del tweet: ID del usuario y contenido del mensaje.</param>
+    /// <returns>Id del tweet creado.</returns>
+    /// <response code="200">Tweet creado correctamente</response>
+    /// <response code="400">Contenido inválido</response>
     [HttpPost]
-    public async Task<IActionResult> PostTweet([FromBody] TweetCreateDto tweet)
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> PostTweet([FromBody] PostTweetCommand command)
     {
-        var tweetId = await _tweetService.PostTweetAsync(tweet.UserId, tweet.Content);
-        return CreatedAtAction(nameof(GetUserTweets), new { userId = tweet.UserId }, new { tweetId });
+        var tweetId = await _mediator.Send(command);
+        return Ok(new { tweetId });
     }
 
-    [HttpGet("timeline/{userId}")]
-    public async Task<IActionResult> GetTimeline(string userId)
-    {
-        var timeline = await _tweetService.GetTimelineAsync(userId);
-        return Ok(timeline);
-    }
-
+    /// <summary>
+    /// Obtiene todos los tweets publicados por un usuario.
+    /// </summary>
+    /// <param name="userId">ID del usuario.</param>
+    /// <returns>Lista de tweets en formato texto.</returns>
+    /// <response code="200">Tweets obtenidos correctamente</response>
+    /// <response code="404">Usuario no encontrado</response>
     [HttpGet("user/{userId}")]
+    [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserTweets(string userId)
     {
-        var tweets = await _tweetService.GetUserTweetsAsync(userId);
-        return Ok(tweets);
+        var result = await _mediator.Send(new GetUserTweetsQuery { UserId = userId });
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Obtiene el timeline (tweets) de los usuarios que sigue un usuario específico.
+    /// </summary>
+    /// <param name="userId">ID del usuario que consulta el timeline.</param>
+    /// <returns>Lista de tweets ordenados por fecha descendente.</returns>
+    /// <response code="200">Timeline obtenido correctamente</response>
+    /// <response code="404">Usuario no encontrado</response>
+    [HttpGet("timeline/{userId}")]
+    [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetTimeline(string userId)
+    {
+        var result = await _mediator.Send(new GetTimelineQuery { UserId = userId });
+        return Ok(result);
     }
 }

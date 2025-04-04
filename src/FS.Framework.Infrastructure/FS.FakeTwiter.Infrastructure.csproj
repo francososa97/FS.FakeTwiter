@@ -7,10 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Shapefile\**" />
+    <EmbeddedResource Remove="Shapefile\**" />
+    <None Remove="Shapefile\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="DataAccess\Persistence\Contexts\" />
     <Folder Include="DataAccess\Persistence\UnitOfWork\" />
     <Folder Include="FileStorage\" />
-    <Folder Include="Shapefile\" />
   </ItemGroup>
 
   <ItemGroup>

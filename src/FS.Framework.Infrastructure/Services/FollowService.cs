@@ -1,13 +1,38 @@
-﻿using Fs.Framework.Application.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FS.FakeTwiter.Domain.Entities;
+using FS.FakeTwitter.Application.Interfaces.Follows;
+using FS.FakeTwitter.Domain.Interfaces;
 
-namespace FS.FakeTwiter.Infrastructure.Services
+namespace FS.FakeTwitter.Infrastructure.Services;
+
+public class FollowService : IFollowService
 {
-    public class FollowService: IFollowService
+    private readonly IUnitOfWork _unitOfWork;
+
+    public FollowService(IUnitOfWork unitOfWork)
     {
+        _unitOfWork = unitOfWork;
+    }
+
+    public async Task FollowAsync(string followerId, string followeeId)
+    {
+        var follow = new FollowRelation
+        {
+            FollowerId = followerId,
+            FolloweeId = followeeId,
+            FollowedAt = DateTime.UtcNow
+        };
+
+        await _unitOfWork.Follows.AddAsync(follow);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public Task<IEnumerable<string>> GetFollowersAsync(string userId)
+    {
+        return _unitOfWork.Follows.GetFollowersAsync(userId);
+    }
+
+    public Task<IEnumerable<string>> GetFollowingAsync(string userId)
+    {
+        return _unitOfWork.Follows.GetFollowingAsync(userId);
     }
 }

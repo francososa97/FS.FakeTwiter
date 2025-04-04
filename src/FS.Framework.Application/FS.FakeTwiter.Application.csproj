@@ -21,7 +21,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FS.Framework.Domain\FS.FakeTwiter.Domain.csproj" />
     <ProjectReference Include="..\FS.Framework.Domain\FS.Framework.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Product\Commands\" />
+    <Folder Include="Features\Product\Queries\" />
   </ItemGroup>
 
 </Project>
