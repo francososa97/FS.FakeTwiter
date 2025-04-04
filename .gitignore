@@ -1,0 +1,11 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+.qodo/
+
+# Archivos generados
+*.user
+*.suo
+*.cache
+.qodo
