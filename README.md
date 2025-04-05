@@ -1,104 +1,157 @@
-# FS Framework API
+# FS.FakeTwitter
 
-Este repositorio contiene la API del proyecto FS Framework, construida para proporcionar servicios robustos, escalables y eficientes. La API está desarrollada utilizando tecnologías modernas para facilitar la integración y el desarrollo de aplicaciones.
+> Challenge técnico de Ualá: Plataforma estilo Twitter desarrollada con arquitectura Onion, EF Core InMemory, CQRS con MediatR, Unit of Work y manejo de excepciones personalizadas.
 
-## Requisitos
+---
 
-- Node.js (v18 o superior)
-- NPM / Yarn
-- Base de datos PostgreSQL
+## 📁 Estructura del Proyecto
 
-## Instalación
+```plaintext
+FS.FakeTwitter.sln
+│
+├── FS.FakeTwitter.Api             # Capa de presentación (controllers, Swagger, middlewares)
+├── FS.FakeTwitter.Application     # Casos de uso, servicios, interfaces, CQRS (commands, queries)
+├── FS.FakeTwitter.Domain          # Entidades, interfaces de repositorio (contratos del dominio)
+├── FS.FakeTwitter.Infrastructure  # Repositorios, UnitOfWork, acceso a datos, servicios
+├── FS.Framework                   # Librería base compartida si se desea escalar
+```
 
-1. **Clona el repositorio:**
+---
+
+## 🪧 Tecnologías Utilizadas
+
+- .NET 8
+- MediatR (CQRS)
+- Entity Framework Core (InMemory)
+- Swagger (OpenAPI)
+- Arquitectura Onion
+- Unit of Work
+- Excepciones personalizadas
+
+---
+
+## 🌐 Endpoints principales
+
+### Tweets
+
+- `POST /api/tweet` - Publicar tweet
+- `GET /api/tweet/user/{userId}` - Ver tweets propios
+- `GET /api/tweet/timeline/{userId}` - Ver timeline con tweets de los seguidos
+
+### Follows
+
+- `POST /api/follow` - Seguir usuario
+- `GET /api/follow/followers/{userId}` - Ver seguidores
+- `GET /api/follow/following/{userId}` - Ver seguidos
+
+---
+
+## 🤖 CQRS con MediatR
+
+Todos los accesos a la lógica de negocio se realizan a través de comandos y queries:
+
+- `PostTweetCommand` + `PostTweetCommandHandler`
+- `GetUserTweetsQuery`, `GetTimelineQuery`
+- `FollowUserCommand` + `GetFollowersQuery`, `GetFollowingQuery`
+
+---
+
+## 📛 Configuración de Swagger
+
+```csharp
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FS.FakeTwitter API V1");
+    c.RoutePrefix = string.Empty; // Swagger en la página principal
+});
+```
+
+En `.csproj`:
+```xml
+<GenerateDocumentationFile>true</GenerateDocumentationFile>
+<NoWarn>$(NoWarn);1591</NoWarn>
+```
+
+---
+
+## ⚡ Unit of Work
+
+Se implementó el patrón `IUnitOfWork` para coordinar los cambios entre repositorios:
+
+```csharp
+public interface IUnitOfWork
+{
+    ITweetRepository Tweets { get; }
+    IFollowRepository Follows { get; }
+    Task<int> SaveChangesAsync();
+}
+```
+
+Y se utiliza en los servicios como:
+
+```csharp
+await _unitOfWork.Tweets.AddAsync(tweet);
+await _unitOfWork.SaveChangesAsync();
+```
+
+---
+
+## 🛑 Excepciones Personalizadas
+
+Se centraliza el manejo de errores con excepciones personalizadas:
+
+- `NotFoundException`
+- `ValidationException`
+- `UnauthorizedException`
+
+---
+
+## 📖 Documentación Swagger
+
+Todos los endpoints están documentados con:
+
+```csharp
+/// <summary>Descripción</summary>
+/// <param name="..."></param>
+/// <returns>...</returns>
+[ProducesResponseType(typeof(...), StatusCodes.Status200OK)]
+[ProducesResponseType(StatusCodes.Status404NotFound)]
+```
+
+---
+
+## ✅ Para ejecutar el proyecto
 
 ```bash
-git clone https://github.com/francososa97/fs-framework-api.git
+cd FS.FakeTwitter.Api
 
+dotnet run
+```
 
-Instala las dependencias:
-bash
-Copiar
-Editar
-npm install
-# o
-yarn install
-Configura las variables de entorno:
-Crea un archivo .env en la raíz del proyecto con la siguiente estructura:
+Y acceder a:
 
-env
-Copiar
-Editar
-PORT=3000
-DATABASE_URL=postgres://usuario:contraseña@localhost:5432/fs_framework
-JWT_SECRET=tu_secreto_para_jwt
-Ejecuta las migraciones:
-bash
-Copiar
-Editar
-npm run migrate
-# o
-yarn migrate
-Ejecución
-Para ejecutar la aplicación en modo desarrollo:
+```
+http://localhost:5000  (Swagger UI)
+```
 
-bash
-Copiar
-Editar
-npm run dev
-# o
-yarn dev
-Para ejecutar en modo producción:
+---
 
-bash
-Copiar
-Editar
-npm run build
-npm start
-# o
-yarn build
-yarn start
-Documentación de la API
-La documentación está generada con Swagger. Para acceder localmente visita:
+## 🌟 Estado actual
 
-bash
-Copiar
-Editar
-http://localhost:3000/api-docs
-Estructura del proyecto
-bash
-Copiar
-Editar
-fs-framework-api/
-├── controllers/    # Controladores
-├── routes/         # Rutas
-├── services/       # Lógica del negocio
-├── models/         # Modelos de datos
-├── middlewares/    # Middlewares
-├── utils/          # Utilidades
-└── tests/          # Pruebas unitarias e integración
-Pruebas
-Ejecuta las pruebas usando:
+- [x] Arquitectura Onion 100% aplicada
+- [x] CQRS con MediatR implementado
+- [x] Swagger documentado y funcional
+- [x] EF Core InMemory + UoW operativo
+- [x] Control de errores con excepciones personalizadas
 
-bash
-Copiar
-Editar
-npm test
-# o
-yarn test
-Contribución
-Las contribuciones son bienvenidas. Por favor, realiza un pull request describiendo los cambios propuestos y asegurándote que el código cumple con las guías del proyecto.
+---
 
-Autor
-Franco Sosa (GitHub)
-Licencia
-Este proyecto está bajo licencia MIT. Consulta el archivo LICENSE para más información.
-
-go
-Copiar
-Editar
-
-
-
-Puedes copiar y pegar directamente este contenido en tu archivo `README.md`.
-
+> Proyecto desarrollado como parte del proceso técnico de Ualá por Franco Damián Sosa
