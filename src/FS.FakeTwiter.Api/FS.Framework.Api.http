@@ -1,0 +1,6 @@
+@FS.FakeTwiter.Api_HostAddress = http://localhost:5225
+
+GET {{FS.FakeTwiter.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

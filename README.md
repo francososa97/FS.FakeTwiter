@@ -13,7 +13,7 @@ FS.FakeTwitter.sln
 ├── FS.FakeTwitter.Application     # Casos de uso, servicios, interfaces, CQRS (commands, queries)
 ├── FS.FakeTwitter.Domain          # Entidades, interfaces de repositorio (contratos del dominio)
 ├── FS.FakeTwitter.Infrastructure  # Repositorios, UnitOfWork, acceso a datos, servicios
-├── FS.Framework                   # Librería base compartida si se desea escalar
+├── FS.FakeTwiter                   # Librería base compartida si se desea escalar
 ```
 
 ---

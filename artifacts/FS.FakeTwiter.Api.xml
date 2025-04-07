@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FS.FakeTwiter.Api</name>
+    </assembly>
+    <members>
+        <member name="M:FS.FakeTwitter.Api.Controllers.FollowController.FollowUser(FS.FakeTwitter.Application.Features.Follows.Commands.FollowUserCommand)">
+            <summary>
+            Permite a un usuario seguir a otro usuario.
+            </summary>
+            <param name="command">Contiene los IDs del seguidor y del seguido.</param>
+            <response code="200">Follow realizado correctamente</response>
+            <response code="400">Datos inválidos</response>
+        </member>
+        <member name="M:FS.FakeTwitter.Api.Controllers.FollowController.GetFollowers(System.String)">
+            <summary>
+            Obtiene la lista de usuarios que siguen a un usuario determinado.
+            </summary>
+            <param name="userId">ID del usuario del que se desea obtener los seguidores.</param>
+            <returns>Lista de IDs de usuarios que siguen al usuario especificado.</returns>
+            <response code="200">Lista de seguidores obtenida correctamente</response>
+            <response code="404">Usuario no encontrado</response>
+        </member>
+        <member name="M:FS.FakeTwitter.Api.Controllers.FollowController.GetFollowing(System.String)">
+            <summary>
+            Obtiene la lista de usuarios a los que sigue un usuario determinado.
+            </summary>
+            <param name="userId">ID del usuario del que se desea obtener los seguidos.</param>
+            <returns>Lista de IDs de usuarios a los que sigue el usuario especificado.</returns>
+            <response code="200">Lista de seguidos obtenida correctamente</response>
+            <response code="404">Usuario no encontrado</response>
+        </member>
+        <member name="M:FS.FakeTwitter.Api.Controllers.TweetController.PostTweet(FS.FakeTwiter.Application.Features.Tweet.Commands.PostTweetCommand.PostTweetCommand)">
+            <summary>
+            Publica un nuevo tweet.
+            </summary>
+            <param name="command">Datos del tweet: ID del usuario y contenido del mensaje.</param>
+            <returns>Id del tweet creado.</returns>
+            <response code="200">Tweet creado correctamente</response>
+            <response code="400">Contenido inválido</response>
+        </member>
+        <member name="M:FS.FakeTwitter.Api.Controllers.TweetController.GetUserTweets(System.String)">
+            <summary>
+            Obtiene todos los tweets publicados por un usuario.
+            </summary>
+            <param name="userId">ID del usuario.</param>
+            <returns>Lista de tweets en formato texto.</returns>
+            <response code="200">Tweets obtenidos correctamente</response>
+            <response code="404">Usuario no encontrado</response>
+        </member>
+        <member name="M:FS.FakeTwitter.Api.Controllers.TweetController.GetTimeline(System.String)">
+            <summary>
+            Obtiene el timeline (tweets) de los usuarios que sigue un usuario específico.
+            </summary>
+            <param name="userId">ID del usuario que consulta el timeline.</param>
+            <returns>Lista de tweets ordenados por fecha descendente.</returns>
+            <response code="200">Timeline obtenido correctamente</response>
+            <response code="404">Usuario no encontrado</response>
+        </member>
+    </members>
+</doc>

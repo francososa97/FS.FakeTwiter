@@ -1,0 +1,6 @@
+{
+  "FS.FakeTwiter.Api, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\Franc\\Desktop\\Uala Challenge\\src\\FS.FakeTwiter.Api",
+  "FS.FakeTwiter.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\Franc\\Desktop\\Uala Challenge\\src\\FS.FakeTwiter.Application",
+  "FS.FakeTwiter.Domain, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\Franc\\Desktop\\Uala Challenge\\src\\FS.FakeTwiter.Domain",
+  "FS.FakeTwiter.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Users\\Franc\\Desktop\\Uala Challenge\\src\\FS.FakeTwiter.Infrastructure"
+}
