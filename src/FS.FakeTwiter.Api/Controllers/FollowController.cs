@@ -1,10 +1,7 @@
 ﻿using FS.FakeTwitter.Application.Features.Follows.Commands;
 using FS.FakeTwitter.Application.Features.Follows.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FS.FakeTwitter.Api.Controllers;
 

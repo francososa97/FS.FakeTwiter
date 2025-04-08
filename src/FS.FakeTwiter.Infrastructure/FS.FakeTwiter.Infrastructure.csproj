@@ -7,15 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="FileStorage\**" />
     <Compile Remove="Shapefile\**" />
+    <EmbeddedResource Remove="FileStorage\**" />
     <EmbeddedResource Remove="Shapefile\**" />
+    <None Remove="FileStorage\**" />
     <None Remove="Shapefile\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="DataAccess\Persistence\Contexts\" />
     <Folder Include="DataAccess\Persistence\UnitOfWork\" />
-    <Folder Include="FileStorage\" />
   </ItemGroup>
 
   <ItemGroup>

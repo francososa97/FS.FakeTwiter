@@ -1,4 +1,5 @@
 ﻿using FS.FakeTwiter.Domain.Entities;
+using FS.FakeTwitter.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace FS.FakeTwiter.Infrastructure.DataAccess;
@@ -12,5 +13,5 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Tweet> Tweets { get; set; }
     public DbSet<FollowRelation> Follows { get; set; }
-
+    public DbSet<User> Users { get; set; }
 }

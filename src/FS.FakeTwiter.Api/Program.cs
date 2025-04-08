@@ -9,6 +9,8 @@ using FS.FakeTwitter.Infrastructure.Services;
 using FS.FakeTwitter.Application.Interfaces.Follows;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
+using FS.FakeTwiter.Application.Interfaces.Users;
+using FS.FakeTwitter.Application.Services;
 
 [ExcludeFromCodeCoverage]
 public class Program
@@ -20,12 +22,13 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-
         builder.Services.AddScoped<ITweetRepository, TweetRepository>();
         builder.Services.AddScoped<ITweetService, TweetService>();
         builder.Services.AddScoped<IFollowRepository, FollowRepository>();
         builder.Services.AddScoped<IFollowService, FollowService>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddScoped<IUserService, UserService>();
+
 
         builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
             typeof(Program).Assembly,

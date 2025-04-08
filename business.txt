@@ -1,0 +1,58 @@
+# Assumptions y Decisiones de Diseño - FS.FakeTwitter (Challenge Ualá)
+
+## ✅ Supuestos del Desafío
+
+1. Todos los usuarios se consideran válidos.
+   - No se implementa un sistema de login o autenticación.
+   - Los identificadores de usuario se envían como parte del body o ruta.
+
+2. No se gestiona sesión de usuario.
+   - No se requiere almacenamiento de tokens o JWT en esta versión.
+
+3. Los tweets tienen un límite de 280 caracteres (similar a Twitter).
+
+4. Se asumió que el sistema debe ser escalable y optimizado para lecturas.
+
+---
+
+## 🏗️ Decisiones Técnicas
+
+1. **Lenguaje y Framework**
+   - Lenguaje: C#
+   - Framework: .NET 8
+   - Patrón de arquitectura: Onion Architecture + CQRS con MediatR
+
+2. **Persistencia**
+   - Se utilizó una base de datos en memoria (`EF Core InMemory`) para simplificar el desarrollo.
+   - Para producción se optaría por SQL Server o PostgreSQL con proyección a Redis para lectura.
+
+3. **Testing**
+   - Se implementaron tests unitarios y de integración.
+   - Se logró 100% de cobertura de código.
+   - Se integró `coverlet` + `reportgenerator` para analizar coverage.
+
+4. **Documentación**
+   - Swagger se configuró para documentar los endpoints automáticamente.
+   - El XML del proyecto se incluye para que Swagger pueda acceder a los comentarios del código.
+
+5. **Manejo de errores**
+   - Se centralizó mediante middleware de excepciones personalizadas.
+   - Tipos: `NotFoundException`, `ValidationException`, `UnauthorizedException`.
+
+6. **Extensibilidad**
+   - Todo el diseño permite agregar fácilmente módulos como:
+     - Autenticación con API Key o JWT
+     - Registro de usuarios
+     - Persistencia real
+     - Cache de timeline
+
+---
+
+## ✨ Posibles mejoras futuras
+
+- Implementación de sistema de usuarios.
+- Autenticación (JWT + Roles).
+- Base de datos relacional y caching.
+- Timeline paginado.
+- Websockets para timeline en tiempo real.
+- Dockerización y despliegue continuo (CI/CD).

@@ -1,6 +1,27 @@
 # FS.FakeTwitter
 
-> Challenge técnico de Ualá: Plataforma estilo Twitter desarrollada con arquitectura Onion, EF Core InMemory, CQRS con MediatR, Unit of Work y manejo de excepciones personalizadas.
+> Challenge técnico de Ualá: Plataforma estilo Twitter desarrollada en **.NET 8 + C#**, sin frontend, utilizando arquitectura Onion, EF Core InMemory, CQRS con MediatR, Unit of Work y manejo de excepciones personalizadas.
+
+---
+
+✅ **Nota importante**  
+Este proyecto **no incluye frontend**. Se accede a través de endpoints REST documentados con Swagger.
+
+Además, **no existe autenticación de usuario ni manejo de sesiones**:  
+> Los **identificadores de usuario** se pasan directamente en el `body`, `path` o `query` según el endpoint.  
+> No se requiere login ni validación de credenciales para ejecutar acciones.
+
+---
+
+## 🧪 Ver cobertura de tests
+
+Para consultar y ver el coverage de manera más óptima utilizar los siguientes comandos desde la solución de Integration Tests:
+
+```bash
+dotnet test --collect:"XPlat Code Coverage"
+reportgenerator -reports:**/coverage.cobertura.xml -targetdir:./coverage-report -reporttypes:Html
+start coverage-report/index.htm
+```
 
 ---
 
@@ -13,7 +34,7 @@ FS.FakeTwitter.sln
 ├── FS.FakeTwitter.Application     # Casos de uso, servicios, interfaces, CQRS (commands, queries)
 ├── FS.FakeTwitter.Domain          # Entidades, interfaces de repositorio (contratos del dominio)
 ├── FS.FakeTwitter.Infrastructure  # Repositorios, UnitOfWork, acceso a datos, servicios
-├── FS.FakeTwiter                   # Librería base compartida si se desea escalar
+├── FS.FakeTwiter                  # Librería base compartida si se desea escalar
 ```
 
 ---
@@ -21,6 +42,7 @@ FS.FakeTwitter.sln
 ## 🪧 Tecnologías Utilizadas
 
 - .NET 8
+- C#
 - MediatR (CQRS)
 - Entity Framework Core (InMemory)
 - Swagger (OpenAPI)
@@ -70,11 +92,12 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "FS.FakeTwitter API V1");
-    c.RoutePrefix = string.Empty; // Swagger en la página principal
+    c.RoutePrefix = string.Empty;
 });
 ```
 
 En `.csproj`:
+
 ```xml
 <GenerateDocumentationFile>true</GenerateDocumentationFile>
 <NoWarn>$(NoWarn);1591</NoWarn>
@@ -132,7 +155,6 @@ Todos los endpoints están documentados con:
 
 ```bash
 cd FS.FakeTwitter.Api
-
 dotnet run
 ```
 

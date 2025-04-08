@@ -6,5 +6,6 @@ public interface IUnitOfWork
 {
     ITweetRepository Tweets { get; }
     IFollowRepository Follows { get; }
+    IUserRepository Users { get; }
     Task<int> SaveChangesAsync();
 }
