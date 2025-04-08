@@ -9,6 +9,19 @@ Se aplicó el patrón **Onion Architecture**, dividido en 4 capas principales:
 - **Infrastructure**: Acceso a datos, implementación de repositorios y servicios
 - **Api**: Entrada HTTP (Controllers, Swagger, Middlewares)
 
+FS.FakeTwitter.sln
+│
+├── src/
+│   ├── FS.FakeTwitter.Api             # Capa de presentación (controllers, Swagger, middlewares)
+│   ├── FS.FakeTwitter.Application     # CQRS, servicios, DTOs, lógica de negocio
+│   ├── FS.FakeTwitter.Domain          # Entidades y contratos del dominio
+│   └── FS.FakeTwitter.Infrastructure  # Repositorios, servicios, DbContext, UnitOfWork
+│
+├── tests/
+│   ├── FS.FakeTwitter.UnitTests         # Unit tests
+│   └── FS.FakeTwitter.IntegrationTests  # Integration tests + coverage
+
+
 > Esta separación permite desacoplar la lógica del negocio de los detalles de infraestructura.
 
 ---
@@ -66,3 +79,62 @@ Durante el desarrollo y testing se utiliza `Microsoft.EntityFrameworkCore.InMemo
 ### Alternativa para producci�n
 
 Para producci�n se sugiere el uso de **PostgreSQL**, por su soporte a relaciones complejas, facilidad de escalar horizontalmente y robustez frente a cargas altas.
+
+
+# 🏛️ Arquitectura High-Level – FS.FakeTwitter
+
+> Esta documentación describe la arquitectura y componentes utilizados en la solución del challenge técnico de Ualá.
+
+---
+
+## 🧱 Arquitectura Utilizada: Onion Architecture
+
+La solución sigue los principios de la arquitectura en capas (Onion), asegurando una separación de responsabilidades clara:
+
+Presentation (Api) │ ├── Application (CQRS, servicios, DTOs, lógica de casos de uso) │ └── MediatR (Commands / Queries / Handlers) │ ├── Domain (Entidades + Interfaces del dominio) │ └── Infrastructure (Repositorios, acceso a datos, EF Core, UnitOfWork)
+
+
+---
+
+## 🔧 Componentes Clave
+
+| Componente                      | Propósito                                                         |
+| ------------------------------ | ----------------------------------------------------------------- |
+| `MediatR`                      | Implementación de CQRS (Commands y Queries con Handlers)         |
+| `Entity Framework Core (InMemory)` | ORM y persistencia en memoria para pruebas                          |
+| `Swagger (Swashbuckle)`        | Documentación y exploración de la API                            |
+| `Unit of Work`                 | Coordinación de múltiples repositorios                           |
+| `Middlewares personalizados`   | Manejo centralizado de errores y excepciones personalizadas      |
+| `xUnit + coverlet`             | Tests unitarios y de integración con cobertura                   |
+| `reportgenerator`              | Generación de reportes de cobertura en HTML                      |
+
+---
+
+## 🧠 Principios y Patrones Aplicados
+
+- **CQRS (Command Query Responsibility Segregation)**: separación entre operaciones de lectura y escritura usando MediatR.
+- **DRY y SOLID**: el código sigue principios de diseño limpio y reutilizable.
+- **DTOs y Mappers**: se utiliza una capa de transformación entre entidades y objetos de transferencia.
+- **Manejo de errores**: mediante excepciones personalizadas (`NotFoundException`, `ValidationException`, etc.).
+
+---
+
+## 🧪 Testing
+
+- ✅ Pruebas unitarias completas.
+- ✅ Pruebas de integración con WebApplicationFactory.
+- ✅ 100% cobertura de código validada con Coverlet + ReportGenerator.
+- ✅ Estrategia de testing ubicada según la arquitectura Onion.
+
+---
+
+## 📂 Estructura General del Proyecto
+
+FS.FakeTwitter.sln │ ├── FS.FakeTwitter.Api # Capa de presentación ├── FS.FakeTwitter.Application # Lógica de negocio, CQRS, servicios ├── FS.FakeTwitter.Domain # Entidades e interfaces del dominio ├── FS.FakeTwitter.Infrastructure # Acceso a datos, EF Core, repositorios ├── tests # Pruebas unitarias e integración
+
+
+---
+
+## 🚀 Consideraciones de Escalabilidad y Extensibilidad
+
+> Se agregará una sección dedicada a estrategias de base de datos y escalabilidad si lo solicitás.

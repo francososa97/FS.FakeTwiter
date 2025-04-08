@@ -13,16 +13,28 @@ Además, **no existe autenticación de usuario ni manejo de sesiones**:
 
 ---
 
-## 🧪 Ver cobertura de tests
+## 🧪 Ver cobertura de tests (usando script automatizado)
 
-Para consultar y ver el coverage de manera más óptima utilizar los siguientes comandos desde la solución de Integration Tests:
+Para ejecutar los tests y generar el reporte de cobertura en formato HTML con un solo comando, podés usar el script incluido:
 
 ```bash
-dotnet test --collect:"XPlat Code Coverage"
-reportgenerator -reports:**/coverage.cobertura.xml -targetdir:./coverage-report -reporttypes:Html
-start coverage-report/index.htm
+./run-tests-with-coverage.ps1
 ```
 
+Este script realiza automáticamente:
+
+1. Ejecuta todos los tests (unitarios e integración).
+2. Recolecta la cobertura con Coverlet.
+3. Genera un reporte visual en HTML con `reportgenerator`.
+4. Abre automáticamente el reporte en tu navegador.
+
+📁 El archivo `run-tests-with-coverage.ps1` se encuentra en la raíz del proyecto.
+
+> ⚠️ Asegurate de tener permisos de ejecución habilitados para scripts en PowerShell. Si es la primera vez que lo usás, podés ejecutar:
+
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope Process
+```
 ---
 
 ## 📁 Estructura del Proyecto
@@ -150,6 +162,28 @@ Todos los endpoints están documentados con:
 ```
 
 ---
+## 🐳 Dockerización (API + PostgreSQL)
+
+### 1. Crear imagen con Dockerfile
+
+```bash
+docker build -t faketwitter-api .
+```
+
+### 2. Ejecutar con docker-compose (opcional)
+
+```bash
+docker-compose up --build
+```
+
+Esto levanta:
+
+- API en `http://localhost:5000`
+- Base de datos PostgreSQL en `localhost:5432`
+
+Configurado en `docker-compose.yml` con credenciales y conexión por variables de entorno.
+
+---
 
 ## ✅ Para ejecutar el proyecto
 
@@ -173,6 +207,9 @@ http://localhost:5000  (Swagger UI)
 - [x] Swagger documentado y funcional
 - [x] EF Core InMemory + UoW operativo
 - [x] Control de errores con excepciones personalizadas
+- [x] Testing unitario e integración con 100% cobertura
+- [x] Script para test coverage automatizado
+- [x] Dockerfile y docker-compose configurados
 
 ---
 
