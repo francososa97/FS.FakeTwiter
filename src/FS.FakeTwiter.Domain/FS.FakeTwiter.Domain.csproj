@@ -7,16 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DTOs\**" />
     <Compile Remove="Services\**" />
     <Compile Remove="ValueObjects\**" />
+    <EmbeddedResource Remove="DTOs\**" />
     <EmbeddedResource Remove="Services\**" />
     <EmbeddedResource Remove="ValueObjects\**" />
+    <None Remove="DTOs\**" />
     <None Remove="Services\**" />
     <None Remove="ValueObjects\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DTOs\" />
   </ItemGroup>
 
 </Project>

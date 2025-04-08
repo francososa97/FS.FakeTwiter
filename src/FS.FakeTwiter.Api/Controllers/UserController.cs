@@ -32,8 +32,8 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserCommand command)
     {
-        var user = await _mediator.Send(command);
-        return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+        var response = await _mediator.Send(command);
+        return Ok(response);
     }
 
     [HttpPut("{id}")]
