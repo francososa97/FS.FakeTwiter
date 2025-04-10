@@ -53,10 +53,6 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserCommand command)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(new { error = "Datos inválidos" });
-        }
         var response = await _mediator.Send(command);
         return Ok(response);
     }

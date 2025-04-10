@@ -9,6 +9,7 @@ using System;
 using FS.FakeTwiter.Application.DTOs;
 using System.Linq;
 using FS.FakeTwiter.Application.Features.Users.Commands.UpdateUserCommand;
+using FS.FakeTwiter.Application.Features.Users.Commands.CreateUserCommand;
 
 namespace FS.FakeTwitter.IntegrationTests.Controllers;
 
@@ -53,7 +54,30 @@ public class UserControllerTests : IntegrationTestBase
         var userIdFromResponse = json.GetProperty("data").GetProperty("id").GetString();
         Assert.Equal(userId, userIdFromResponse);
     }
+    [Fact]
+    public async Task Should_Return_BadRequest_When_Data_Is_Invalid()
+    {
+        await AuthorizeAsync();
+        // Arrange
+        var invalidRequest = new CreateUserCommand(
+            Email: string.Empty,
+            Username: ""
+        );
 
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/user", invalidRequest);
+
+        // Assert
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+        // Leer el contenido de la respuesta
+        var content = await response.Content.ReadAsStringAsync();
+
+        // Verificar que el mensaje de error contiene las claves esperadas
+        Assert.Contains("'Email' no debería estar vacío.", content);
+        Assert.Contains("El correo electrónico no es válido.", content);
+        Assert.Contains("El nombre de usuario es requerido.", content);
+    }
     [Fact]
     public async Task Should_Get_All_Users()
     {

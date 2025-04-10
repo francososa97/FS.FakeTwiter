@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -49,18 +48,32 @@ public class ApiKeyMiddlewareIntegrationTests : IClassFixture<WebApplicationFact
     {
         // Act
         var request = new HttpRequestMessage(HttpMethod.Get, "/api/User");
-        var login = new { Email = "admin", Password = "admin123" };
-        var response = await _client.PostAsJsonAsync("/api/auth/login", login);
-        response.EnsureSuccessStatusCode();
 
-        var json = await response.Content.ReadFromJsonAsync<JsonElement>();
+        var validApiKey = "super-secret-key";
+
+        request.Headers.Add("X-API-KEY", validApiKey);
+        var login = new { Email = "admin", Password = "admin123" };
+        var responseAuth = await _client.PostAsJsonAsync("/api/auth/login", login);
+        responseAuth.EnsureSuccessStatusCode();
+
+        var json = await responseAuth.Content.ReadFromJsonAsync<JsonElement>();
         var token = json.GetProperty("token").GetString();
 
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-        var responseApi = await _client.GetAsync("/api/user");
+        var response = await _client.SendAsync(request);
 
         // Assert
-        Assert.Equal(HttpStatusCode.OK, responseApi.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Should_Pass_When_Requested_Swagger_Endpoint()
+    {
+        // Act
+        var response = await _client.GetAsync("/swagger");
+
+        // Assert
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 }

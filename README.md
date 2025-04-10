@@ -221,7 +221,7 @@ dotnet run
 - [x] Validaciones asíncronas en handlers
 - [x] Autenticación JWT + API Key
 - [x] Documentación Swagger + Docker + Tests
-- [x] 100% cobertura con reporte automatizado
+- [x] 97% cobertura con reporte automatizado
 - [x] Swagger documentado y funcional
 - [x] EF Core InMemory + UoW operativo
 - [x] Control de errores con excepciones personalizadas
