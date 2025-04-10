@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FS.FakeTwitter.Api.Controllers;
 
+/// <summary>
+/// Controller para obtener Seguimientos entre usuarios
+/// </summary>
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]

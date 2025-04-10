@@ -1,9 +1,6 @@
 ﻿using FS.FakeTwitter.Application.Exceptions;
 using MediatR;
-using FS.FakeTwiter.Application.Interfaces.Tweets;
 using FS.FakeTwiter.Application.Features.Tweet.Commands.PostTweetCommand;
-using FS.FakeTwiter.Application.Interfaces.Users;
-using FS.FakeTwiter.Domain.Entities;
 
 public class PostTweetCommandHandler : IRequestHandler<PostTweetCommand, ApiResponse<Guid>>
 {

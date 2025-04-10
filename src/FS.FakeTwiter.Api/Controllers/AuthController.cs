@@ -7,6 +7,9 @@ using System.Security.Claims;
 using System.Text;
 namespace FS.FakeTwiter.Api.Controllers;
 
+/// <summary>
+/// Controller encargado del Auth de la api
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [AllowAnonymous]

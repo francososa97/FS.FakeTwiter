@@ -1,6 +1,4 @@
-﻿using FS.FakeTwiter.Application.Interfaces.Tweets;
-using FS.FakeTwiter.Domain.Entities;
-using FS.FakeTwitter.Domain.Interfaces;
+﻿using FS.FakeTwiter.Domain.Entities;
 
 namespace FS.FakeTwitter.Infrastructure.Services;
 

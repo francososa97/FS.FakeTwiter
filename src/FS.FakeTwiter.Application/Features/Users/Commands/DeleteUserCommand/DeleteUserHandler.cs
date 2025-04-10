@@ -1,6 +1,4 @@
-﻿using FS.FakeTwiter.Application.Interfaces.Users;
-using FS.FakeTwiter.Application.Mappers;
-using MediatR;
+﻿using MediatR;
 
 namespace FS.FakeTwiter.Application.Features.Users.Commands.DeleteUserCommand
 {

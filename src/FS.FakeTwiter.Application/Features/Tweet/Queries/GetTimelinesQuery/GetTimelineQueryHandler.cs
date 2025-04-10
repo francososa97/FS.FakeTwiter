@@ -1,5 +1,4 @@
-﻿using FS.FakeTwiter.Application.Interfaces.Tweets;
-using FS.FakeTwitter.Application.Features.Tweets.Queries;
+﻿using FS.FakeTwitter.Application.Features.Tweets.Queries;
 using MediatR;
 
 public class GetTimelineQueryHandler : IRequestHandler<GetTimelineQuery, IEnumerable<string>>

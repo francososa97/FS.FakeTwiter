@@ -136,5 +136,78 @@ FS.FakeTwitter.sln │ ├── FS.FakeTwitter.Api # Capa de presentación ├�
 ---
 
 ## 🚀 Consideraciones de Escalabilidad y Extensibilidad
+A continuación, se describen las estrategias técnicas y arquitectónicas propuestas para escalar el sistema FS.FakeTwitter y soportar al menos 1 millón de usuarios activos al mismo tiempo.
 
-> Se agregará una sección dedicada a estrategias de base de datos y escalabilidad si lo solicitás.
+---
+
+### 🧱 Arquitectura Modular y Desacoplada
+
+- **Onion Architecture** + **CQRS con MediatR**: permite aislar la lógica de negocio, facilitando el escalado por capas.
+- **Separación de responsabilidad** en comandos (escritura) y queries (lectura) permite escalar cada una por separado.
+
+---
+
+### 🗃️ Base de Datos Escalable
+
+- **Lecturas**: se sugiere utilizar **MongoDB** o **Redis** como proyección CQRS para los timelines (rápido acceso y agregación).
+- **Escrituras**: utilizar **PostgreSQL** con índices, `partitioning` y `materialized views`.
+- **Seguidores**: almacenar los seguidores como un campo JSONB en PostgreSQL para cada usuario (actualizable por eventos), reduciendo `JOINs`.
+
+```json
+{
+  "followers": ["user-1", "user-2", "user-3"]
+}
+```
+
+---
+
+### 🧠 Caching
+
+- **Redis** para cachear timelines, listas de seguidores, últimos tweets, etc.
+- TTL corto para consistencia eventual.
+
+---
+
+### 💬 Event Driven Architecture (EDA)
+
+- **RabbitMQ** o **Kafka** para desacoplar acciones como:
+  - Usuario sigue a otro ➝ genera evento ➝ se actualiza la proyección en MongoDB.
+  - Nuevo tweet ➝ notificación a seguidores ➝ colas de envío async.
+
+---
+
+### 🧵 Concurrencia y Rendimiento
+
+- **Load Balancers** como NGINX o Azure Front Door.
+- **Instancias horizontales** de la API con **Kubernetes** o **Docker Swarm**.
+- **Rate limiting** y control de sesiones si se agrega autenticación real.
+
+---
+
+### 🌐 CDN + Edge Caching (en caso de front-end)
+
+- A futuro: servir assets (p.ej., imágenes de perfil o medios) vía CDN (Cloudflare, Akamai).
+
+---
+
+### 🔍 Observabilidad
+
+- **Logging distribuido** (Serilog + ElasticSearch).
+- **Tracing** con Jaeger o OpenTelemetry.
+- **Monitoreo** con Prometheus + Grafana.
+
+---
+
+### ✅ Resumen de Beneficios
+
+| Técnica                    | Beneficio                              |
+|---------------------------|----------------------------------------|
+| CQRS + MediatR            | Escala lectura/escritura separadamente |
+| PostgreSQL + JSONB        | Reducción de JOINs complejos           |
+| Redis/Mongo como ReadStore| Respuesta rápida                       |
+| Kafka/RabbitMQ            | Alta concurrencia sin bloqueo directo  |
+| Kubernetes                | Escalado horizontal eficiente          |
+
+---
+
+> Estas prácticas garantizan que la solución puede crecer a millones de usuarios concurrentes sin reescribir la arquitectura base.

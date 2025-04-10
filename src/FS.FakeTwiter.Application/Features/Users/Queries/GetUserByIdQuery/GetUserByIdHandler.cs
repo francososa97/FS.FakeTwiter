@@ -1,7 +1,5 @@
 ﻿using FS.FakeTwiter.Application.DTOs;
-using FS.FakeTwiter.Application.Interfaces.Users;
 using FS.FakeTwiter.Application.Mappers;
-using FS.FakeTwitter.Domain.Entities;
 using MediatR;
 
 namespace FS.FakeTwiter.Application.Features.Users.Queries.GetUserByIdQuery;

@@ -1,5 +1,4 @@
 ﻿using FS.FakeTwiter.Application.DTOs;
-using FS.FakeTwiter.Application.Interfaces.Users;
 using FS.FakeTwiter.Application.Mappers;
 using MediatR;
 

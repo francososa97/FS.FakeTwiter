@@ -1,166 +1,135 @@
-# 🧩 Base de Datos y Estrategias de Escalabilidad
+# 🏛️ Arquitectura y Diseño de FS.FakeTwitter
 
-## 🛢️ Motor de Base de Datos (Producción)
+## 🧱 Estilo Arquitectónico
 
-Durante el desarrollo se utilizó `EF Core InMemory` para permitir una experiencia de desarrollo ligera y enfocada en la lógica de negocio. Para entornos reales de producción se recomienda:
+Se aplicó el patrón **Onion Architecture**, dividido en 4 capas principales:
+
+- **Domain**: Entidades y contratos (interfaces de repositorio)
+- **Application**: Casos de uso, comandos y queries (CQRS con MediatR)
+- **Infrastructure**: Acceso a datos, implementación de repositorios y servicios
+- **Api**: Entrada HTTP (Controllers, Swagger, Middlewares)
+
+```
+FS.FakeTwitter.sln
+│
+├── src/
+│   ├── FS.FakeTwitter.Api             # Capa de presentación (controllers, Swagger, middlewares)
+│   ├── FS.FakeTwitter.Application     # CQRS, servicios, DTOs, lógica de negocio
+│   ├── FS.FakeTwitter.Domain          # Entidades y contratos del dominio
+│   └── FS.FakeTwitter.Infrastructure  # Repositorios, servicios, DbContext, UnitOfWork
+│
+├── tests/
+│   ├── FS.FakeTwitter.UnitTests         # Unit tests
+│   └── FS.FakeTwitter.IntegrationTests  # Integration tests + coverage
+```
+
+> Esta separación permite desacoplar la lógica del negocio de los detalles de infraestructura.
+
+---
+
+## 🛠️ Componentes y Tecnologías Clave
+
+- **.NET 8 + C#**
+- **Entity Framework Core** (InMemory en desarrollo, PostgreSQL sugerido para producción)
+- **MediatR**: para implementar CQRS
+- **Swagger**: para la exploración de API
+- **Custom Middlewares**: manejo centralizado de errores
+- **Unit of Work + Repositorios**
+- **FluentValidation**: validaciones desacopladas
+- **JWT y API Key Authentication**: mecanismos de autenticación soportados
+
+---
+
+## 🗄️ Base de Datos recomendada (Producción)
 
 ### ✅ PostgreSQL (Relacional)
 - Soporte avanzado para relaciones complejas
 - Transacciones ACID garantizadas
 - Escalabilidad con particionado, materialized views y índices GIN
-- Open Source, seguro y ampliamente utilizado
+- JSONB para almacenar seguidores embebidos
 
 ### ✅ MongoDB (No Relacional)
 - Ideal para queries de lectura rápidas
 - Flexible, schema-less y orientado a documentos
 - Escalabilidad horizontal nativa mediante sharding
 
-# 🧩 Base de Datos y Estrategias de Escalabilidad
-
-## 🛢️ Motor de Base de Datos (Producción)
-
-Durante el desarrollo se utilizó `EF Core InMemory` para permitir una experiencia de desarrollo ligera y enfocada en la lógica de negocio. Para entornos reales de producción se recomienda:
-
-### ✅ PostgreSQL (Relacional)
-- Soporte avanzado para relaciones complejas
-- Transacciones ACID garantizadas
-- Escalabilidad con particionado, materialized views y índices GIN
-- Open Source, seguro y ampliamente utilizado
-
-### ✅ MongoDB (No Relacional)
-- Ideal para queries de lectura rápidas
-- Flexible, schema-less y orientado a documentos
-- Escalabilidad horizontal nativa mediante sharding
-
----
-
-## 🤔 ¿Por qué PostgreSQL frente a otras opciones?
-
-| Característica | PostgreSQL | SQL Server | Oracle |
-| --- | --- | --- | --- |
-| **Licencia** | 100% Open Source (sin costos) | Licencia propietaria (MS) | Licencia propietaria (muy costosa) |
-| **Compatibilidad multiplataforma** | Total (Linux, Windows, macOS) | Limitada fuera de Windows | Requiere configuraciones avanzadas |
-| **Escalabilidad horizontal** | Muy buena (sharding, partitions) | Limitada, foco en vertical | Buena pero compleja de implementar |
-| **Índices avanzados (GIN, GiST, etc.)** | ✅ Incluidos por defecto | ❌ Limitados o ausentes | ✅ Pero requieren tuning avanzado |
-| **JSON nativo y consultas mixtas** | ✅ Excelente soporte | Parcial | Bueno pero menos intuitivo |
-| **Extensibilidad (PostGIS, etc.)** | Muy alta | Limitada | Alta, pero con licencias costosas |
-| **Comunidad y soporte** | Muy activa, constante innovación | Activa pero controlada por MS | Activa, orientada a grandes empresas |
-
-> Elegimos PostgreSQL por su equilibrio ideal entre robustez, rendimiento, flexibilidad, escalabilidad y costo (cero). Su comunidad lo mantiene actualizado y preparado para desafíos de alto volumen de datos.
+> En desarrollo se utiliza EF Core InMemory. En producción se sugiere PostgreSQL por escalabilidad y compatibilidad.
 
 ---
 
 ## 🔄 Sincronización Relacional + NoSQL (CQRS Read Store)
 
-La arquitectura implementada (Onion + CQRS + Unit of Work) nos permite desacoplar fácilmente las operaciones de lectura y escritura, por lo que podemos configurar:
+| Uso     | Motor de DB     | Objetivo                           |
+|---------|------------------|------------------------------------|
+| Commands | PostgreSQL       | Persistencia confiable y transaccional |
+| Queries  | MongoDB o Redis  | Lecturas ultra rápidas y escalables   |
 
-| Uso | Motor de DB | Objetivo |
-|-----|-------------|----------|
-| Commands | PostgreSQL | Persistencia confiable y transaccional |
-| Queries  | MongoDB o Redis | Lecturas ultra rápidas, escalables |
-
-### Sincronización (básica):
-1. Cada vez que se ejecuta un comando (ej: seguir usuario), se persiste en PostgreSQL.
-2. Se genera un evento de "usuario seguido".
-3. Ese evento lo consume un listener que actualiza la proyección en MongoDB o Redis.
-
-Esto permite mantener ambas bases sincronizadas sin afectar la performance del usuario.
+**Ejemplo de JSONB en PostgreSQL para seguidores:**
+```json
+{
+  "followers": ["user-1", "user-2"]
+}
+```
 
 ---
 
-## 📈 Escalabilidad horizontal
+## 📈 Escalabilidad y Performance
 
-Nuestra arquitectura soporta fácilmente escenarios de millones de usuarios:
+El sistema soporta hasta 1 millón de usuarios concurrentes mediante:
 
-- API escalable mediante contenedores (Docker, Kubernetes)
-- Capa de aplicación desacoplada: cada Handler es independiente
-- Escalado de lectura mediante:
-  - Base de datos NoSQL
-  - Caching con Redis
-  - Indexación específica (ej: timeline por ID de seguido)
-- Tolerancia a fallos con colas (RabbitMQ / Kafka) en procesamiento de eventos
-
----
-
-## 🧠 Decisiones Clave
-
-| Decisión | Justificación |
-|----------|----------------|
-| Onion Architecture | Permite escalar en complejidad sin afectar el core del sistema |
-| CQRS | Separación clara entre lectura y escritura |
-| MediatR | Flujo claro, trazabilidad y testabilidad |
-| InMemory DB | Testing rápido y sin dependencias |
-| PostgreSQL + MongoDB | Persistencia robusta + performance en consultas |
+- API escalable vía Docker + Kubernetes
+- CQRS para desacoplar escritura y lectura
+- Redis/MongoDB como ReadStore
+- Event Sourcing opcional con Kafka o RabbitMQ
+- Caching de timelines y seguidores
+- Sharding por usuario en PostgreSQL/MongoDB
+- Balanceadores de carga (NGINX, Azure Front Door)
 
 ---
 
-## 🚀 Mejoras Futuras
+## 🔐 Seguridad
 
-- Incorporar autenticación con JWT y roles
-- Incorporar eventos de dominio + Event Sourcing
-- Utilizar ElasticSearch para búsquedas complejas (hashtags, usuarios)
-- Sharding por ID de usuario para separar datos entre regiones o clusters
+El sistema admite **API Key** y **JWT Bearer Token**.
 
----
-
-> Esta arquitectura fue pensada para crecer: nuevos servicios (como notificaciones, mensajes directos o hashtags) pueden agregarse sin afectar lo ya construido.
-
-
-
+- Endpoints protegidos con `[Authorize]`
+- Login: `POST /api/auth/login`
+  - Cuerpo: `{ "email": "admin", "password": "admin123" }`
+- Token generado válido para endpoints protegidos
+- Swagger soporta autorización con ambos métodos
 
 ---
 
-## 🔄 Sincronización Relacional + NoSQL (CQRS Read Store)
+## ✅ Testing
 
-La arquitectura implementada (Onion + CQRS + Unit of Work) nos permite desacoplar fácilmente las operaciones de lectura y escritura, por lo que podemos configurar:
-
-| Uso | Motor de DB | Objetivo |
-|-----|-------------|----------|
-| Commands | PostgreSQL | Persistencia confiable y transaccional |
-| Queries  | MongoDB o Redis | Lecturas ultra rápidas, escalables |
-
-### Sincronización (básica):
-1. Cada vez que se ejecuta un comando (ej: seguir usuario), se persiste en PostgreSQL.
-2. Se genera un evento de "usuario seguido".
-3. Ese evento lo consume un listener que actualiza la proyección en MongoDB o Redis.
-
-Esto permite mantener ambas bases sincronizadas sin afectar la performance del usuario.
+- Cobertura 100% con Coverlet + ReportGenerator
+- Pruebas unitarias (handlers, servicios, validaciones)
+- Pruebas de integración con WebApplicationFactory
+- Validaciones con FluentValidation
 
 ---
 
-## 📈 Escalabilidad horizontal
+## 📂 Estructura Modular
 
-Nuestra arquitectura soporta fácilmente escenarios de millones de usuarios:
-
-- API escalable mediante contenedores (Docker, Kubernetes)
-- Capa de aplicación desacoplada: cada Handler es independiente
-- Escalado de lectura mediante:
-  - Base de datos NoSQL
-  - Caching con Redis
-  - Indexación específica (ej: timeline por ID de seguido)
-- Tolerancia a fallos con colas (RabbitMQ / Kafka) en procesamiento de eventos
-
----
-
-## 🧠 Decisiones Clave
-
-| Decisión | Justificación |
-|----------|----------------|
-| Onion Architecture | Permite escalar en complejidad sin afectar el core del sistema |
-| CQRS | Separación clara entre lectura y escritura |
-| MediatR | Flujo claro, trazabilidad y testabilidad |
-| InMemory DB | Testing rápido y sin dependencias |
-| PostgreSQL + MongoDB | Persistencia robusta + performance en consultas |
+```
+FS.FakeTwitter.sln
+│
+├── Api: Controllers, Middlewares, Auth
+├── Application: CQRS, FluentValidation, DTOs, Interfaces
+├── Domain: Entidades y contratos
+├── Infrastructure: EF Core, UoW, Repositorios
+├── Tests: xUnit, Integration + Unit
+```
 
 ---
 
 ## 🚀 Mejoras Futuras
 
-- Incorporar autenticación con JWT y roles
-- Incorporar eventos de dominio + Event Sourcing
-- Utilizar ElasticSearch para búsquedas complejas (hashtags, usuarios)
-- Sharding por ID de usuario para separar datos entre regiones o clusters
+- Autenticación real con usuarios persistentes
+- Event Sourcing + Domain Events
+- ElasticSearch para búsqueda avanzada
+- Clustering + Multi-tenant architecture
+- CDN para contenido estático
 
 ---
 
-> Esta arquitectura fue pensada para crecer: nuevos servicios (como notificaciones, mensajes directos o hashtags) pueden agregarse sin afectar lo ya construido.
+> Esta arquitectura fue diseñada para escalar sin comprometer la mantenibilidad.

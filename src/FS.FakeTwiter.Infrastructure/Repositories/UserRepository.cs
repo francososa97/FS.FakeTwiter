@@ -1,6 +1,5 @@
 ﻿using FS.FakeTwiter.Infrastructure.DataAccess;
 using FS.FakeTwitter.Domain.Entities;
-using FS.FakeTwitter.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace FS.FakeTwitter.Infrastructure.Repositories

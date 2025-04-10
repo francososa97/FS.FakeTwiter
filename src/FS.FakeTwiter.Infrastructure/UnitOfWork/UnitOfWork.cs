@@ -1,7 +1,4 @@
-﻿using FS.FakeTwitter.Application.Interfaces;
-using FS.FakeTwitter.Domain.Entities;
-using FS.FakeTwitter.Domain.Interfaces;
-using global::FS.FakeTwiter.Infrastructure.DataAccess;
+﻿using global::FS.FakeTwiter.Infrastructure.DataAccess;
 
 namespace FS.FakeTwiter.Infrastructure.UnitOfWork;
 

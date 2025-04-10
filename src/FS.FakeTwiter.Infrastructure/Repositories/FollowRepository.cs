@@ -1,5 +1,4 @@
 ﻿using FS.FakeTwiter.Domain.Entities;
-using FS.FakeTwitter.Application.Interfaces;
 using FS.FakeTwiter.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 

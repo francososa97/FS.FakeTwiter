@@ -5,11 +5,73 @@
 ---
 
 ✅ **Nota importante**  
-Este proyecto **no incluye frontend**. Se accede a través de endpoints REST documentados con Swagger.
+Este proyecto ahora **incluye autenticación**, utilizando:
 
-Además, **no existe autenticación de usuario ni manejo de sesiones**:  
-> Los **identificadores de usuario** se pasan directamente en el `body`, `path` o `query` según el endpoint.  
-> No se requiere login ni validación de credenciales para ejecutar acciones.
+- 🔐 **API Key** (modo rápido para testeo).
+- 🔐 **JWT** (modo seguro y realista con login).
+
+Podés consumir los endpoints protegidos usando cualquiera de las dos estrategias.
+
+---
+
+## 🔐 Seguridad y Autenticación
+
+### 🔑 API Key
+
+Agregá el siguiente header para autenticarte con API Key:
+
+```http
+X-API-KEY: super-secret-key
+```
+
+> Este modo es útil para pruebas rápidas en Swagger o Postman.
+
+---
+
+### 🔓 JWT (Login real con credenciales)
+
+1. Hacé login en:
+
+```
+POST /api/Auth/login
+```
+
+2. Usá el siguiente `body` de prueba:
+
+```json
+{
+  "email": "admin",
+  "password": "admin123"
+}
+```
+
+3. El response incluirá un token JWT:
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR..."
+}
+```
+
+4. Usalo en los headers como:
+
+```http
+Authorization: Bearer {token}
+```
+
+> JWT válido por 3 horas. El payload incluye `sub`, `jti` y `name`.
+
+---
+
+## ✅ Validaciones con FluentValidation
+
+Se integró **FluentValidation** para manejar reglas de negocio de forma declarativa. Incluye:
+
+- Validaciones sincrónicas en todos los comandos (`PostTweet`, `FollowUser`, etc.).
+- Validaciones asíncronas (como evitar seguir dos veces al mismo usuario).
+- Mensajes personalizados (ej: "juan ya sigue a pedro").
+
+> Las validaciones asíncronas se manejan dentro de los `Handlers` para evitar conflictos con la validación automática de ASP.NET Core.
 
 ---
 
@@ -21,7 +83,7 @@ Para ejecutar los tests y generar el reporte de cobertura en formato HTML con un
 ./run-tests-with-coverage.ps1
 ```
 
-Este script realiza automáticamente:
+Este script:
 
 1. Ejecuta todos los tests (unitarios e integración).
 2. Recolecta la cobertura con Coverlet.
@@ -41,12 +103,11 @@ Set-ExecutionPolicy RemoteSigned -Scope Process
 
 ```plaintext
 FS.FakeTwitter.sln
-│
-├── FS.FakeTwitter.Api             # Capa de presentación (controllers, Swagger, middlewares)
-├── FS.FakeTwitter.Application     # Casos de uso, servicios, interfaces, CQRS (commands, queries)
-├── FS.FakeTwitter.Domain          # Entidades, interfaces de repositorio (contratos del dominio)
-├── FS.FakeTwitter.Infrastructure  # Repositorios, UnitOfWork, acceso a datos, servicios
-├── FS.FakeTwiter                  # Librería base compartida si se desea escalar
+├── FS.FakeTwitter.Api             # API + Swagger + Auth
+├── FS.FakeTwitter.Application     # CQRS + Reglas de negocio
+├── FS.FakeTwitter.Domain          # Entidades + Interfaces
+├── FS.FakeTwitter.Infrastructure  # Repositorios + DB + Servicios
+├── FS.FakeTwiter                  # Base compartida (si escala)
 ```
 
 ---
@@ -57,7 +118,9 @@ FS.FakeTwitter.sln
 - C#
 - MediatR (CQRS)
 - Entity Framework Core (InMemory)
+- FluentValidation
 - Swagger (OpenAPI)
+- Autenticación: API Key + JWT
 - Arquitectura Onion
 - Unit of Work
 - Excepciones personalizadas
@@ -70,7 +133,7 @@ FS.FakeTwitter.sln
 
 - `POST /api/tweet` - Publicar tweet
 - `GET /api/tweet/user/{userId}` - Ver tweets propios
-- `GET /api/tweet/timeline/{userId}` - Ver timeline con tweets de los seguidos
+- `GET /api/tweet/timeline/{userId}` - Ver timeline  con tweets de los seguidos
 
 ### Follows
 
@@ -78,70 +141,39 @@ FS.FakeTwitter.sln
 - `GET /api/follow/followers/{userId}` - Ver seguidores
 - `GET /api/follow/following/{userId}` - Ver seguidos
 
+### Auth
+
+- `POST /api/auth/login` - Obtener JWT
+
+### Users
+
+- `POST /api/user` - Crear un nuevo usuario
+- `GET /api/user` - Obtener todos los usuarios
+- `GET /api/user/{id}` - Obtener un usuario por ID
+- `PUT /api/user/{id}` - Actualizar un usuario
+- `DELETE /api/user/{id}` - Eliminar un usuario (soft delete)
+
 ---
 
 ## 🤖 CQRS con MediatR
 
-Todos los accesos a la lógica de negocio se realizan a través de comandos y queries:
+Todos los casos de uso se modelan como comandos/queries:
 
-- `PostTweetCommand` + `PostTweetCommandHandler`
-- `GetUserTweetsQuery`, `GetTimelineQuery`
-- `FollowUserCommand` + `GetFollowersQuery`, `GetFollowingQuery`
-
----
-
-## 📛 Configuración de Swagger
-
-```csharp
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-});
-
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FS.FakeTwitter API V1");
-    c.RoutePrefix = string.Empty;
-});
-```
-
-En `.csproj`:
-
-```xml
-<GenerateDocumentationFile>true</GenerateDocumentationFile>
-<NoWarn>$(NoWarn);1591</NoWarn>
-```
+- `PostTweetCommand` / `FollowUserCommand`
+- `GetUserTweetsQuery` / `GetTimelineQuery`
+- `GetFollowersQuery` / `GetFollowingQuery`
 
 ---
 
-## ⚡ Unit of Work
+## 🛠️ Unit of Work
 
-Se implementó el patrón `IUnitOfWork` para coordinar los cambios entre repositorios:
-
-```csharp
-public interface IUnitOfWork
-{
-    ITweetRepository Tweets { get; }
-    IFollowRepository Follows { get; }
-    Task<int> SaveChangesAsync();
-}
-```
-
-Y se utiliza en los servicios como:
-
-```csharp
-await _unitOfWork.Tweets.AddAsync(tweet);
-await _unitOfWork.SaveChangesAsync();
-```
+Patrón `IUnitOfWork` para mantener consistencia entre operaciones de DB.
 
 ---
 
 ## 🛑 Excepciones Personalizadas
 
-Se centraliza el manejo de errores con excepciones personalizadas:
+Errores centralizados en middleware:
 
 - `NotFoundException`
 - `ValidationException`
@@ -151,63 +183,48 @@ Se centraliza el manejo de errores con excepciones personalizadas:
 
 ## 📖 Documentación Swagger
 
-Todos los endpoints están documentados con:
+Toda la API está documentada en Swagger UI, accesible desde:
 
-```csharp
-/// <summary>Descripción</summary>
-/// <param name="..."></param>
-/// <returns>...</returns>
-[ProducesResponseType(typeof(...), StatusCodes.Status200OK)]
-[ProducesResponseType(StatusCodes.Status404NotFound)]
+```
+http://localhost:5000/swagger
 ```
 
 ---
-## 🐳 Dockerización (API + PostgreSQL)
 
-### 1. Crear imagen con Dockerfile
-
-```bash
-docker build -t faketwitter-api .
-```
-
-### 2. Ejecutar con docker-compose (opcional)
+## 🐳 Dockerización
 
 ```bash
 docker-compose up --build
 ```
 
-Esto levanta:
+Levanta:
 
 - API en `http://localhost:5000`
-- Base de datos PostgreSQL en `localhost:5432`
-
-Configurado en `docker-compose.yml` con credenciales y conexión por variables de entorno.
+- PostgreSQL local
 
 ---
 
-## ✅ Para ejecutar el proyecto
+## ✅ Ejecutar el proyecto localmente
 
 ```bash
 cd FS.FakeTwitter.Api
 dotnet run
 ```
 
-Y acceder a:
-
-```
-http://localhost:5000  (Swagger UI)
-```
-
 ---
 
 ## 🌟 Estado actual
 
-- [x] Arquitectura Onion 100% aplicada
-- [x] CQRS con MediatR implementado
+- [x] Arquitectura Onion
+- [x] CQRS con MediatR
+- [x] FluentValidation integrado
+- [x] Validaciones asíncronas en handlers
+- [x] Autenticación JWT + API Key
+- [x] Documentación Swagger + Docker + Tests
+- [x] 100% cobertura con reporte automatizado
 - [x] Swagger documentado y funcional
 - [x] EF Core InMemory + UoW operativo
 - [x] Control de errores con excepciones personalizadas
-- [x] Testing unitario e integración con 100% cobertura
 - [x] Script para test coverage automatizado
 - [x] Dockerfile y docker-compose configurados
 

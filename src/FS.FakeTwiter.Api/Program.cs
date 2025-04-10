@@ -1,15 +1,10 @@
 ﻿using FS.FakeTwiter.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
-using FS.FakeTwiter.Application.Interfaces.Tweets;
 using FS.FakeTwiter.Infrastructure.UnitOfWork;
-using FS.FakeTwitter.Domain.Interfaces;
-using FS.FakeTwitter.Application.Interfaces;
 using FS.FakeTwitter.Infrastructure.Repositories;
 using FS.FakeTwitter.Infrastructure.Services;
-using FS.FakeTwitter.Application.Interfaces.Follows;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
-using FS.FakeTwiter.Application.Interfaces.Users;
 using FS.FakeTwitter.Application.Services;
 using FS.FakeTwiter.Api.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

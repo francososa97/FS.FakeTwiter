@@ -1,9 +1,5 @@
-﻿using FS.FakeTwiter.Application.Interfaces.Users;
-using FS.FakeTwitter.Application.Exceptions;
+﻿using FS.FakeTwitter.Application.Exceptions;
 using FS.FakeTwitter.Application.Features.Follows.Commands;
-using FS.FakeTwitter.Application.Interfaces;
-using FS.FakeTwitter.Application.Interfaces.Follows;
-using FS.FakeTwitter.Domain.Interfaces;
 using MediatR;
 
 public class FollowUserCommandHandler : IRequestHandler<FollowUserCommand, Unit>

@@ -1,5 +1,4 @@
 ﻿using FS.FakeTwitter.Application.Features.Follows.Queries;
-using FS.FakeTwitter.Application.Interfaces.Follows;
 using MediatR;
 
 public class GetFollowingQueryHandler : IRequestHandler<GetFollowingQuery, IEnumerable<string>>

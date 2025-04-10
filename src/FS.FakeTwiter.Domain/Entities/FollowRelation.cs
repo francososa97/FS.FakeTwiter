@@ -1,15 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace FS.FakeTwiter.Domain.Entities;
 
-namespace FS.FakeTwiter.Domain.Entities;
-
+/// <summary>
+/// Entidad que representa una relación de seguimiento entre dos usuarios.
+/// </summary>
 public class FollowRelation
 {
+    /// <summary>
+    /// Identificador único de la relación.
+    /// </summary>
     public Guid Id { get; set; } = Guid.NewGuid();
-    public string FollowerId { get; set; } = string.Empty; // Quien sigue
-    public string FolloweeId { get; set; } = string.Empty; // A quién sigue
+
+    /// <summary>
+    /// ID del usuario que sigue.
+    /// </summary>
+    public string FollowerId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// ID del usuario seguido.
+    /// </summary>
+    public string FolloweeId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Fecha y hora en que se realizó el seguimiento.
+    /// </summary>
     public DateTime FollowedAt { get; set; } = DateTime.UtcNow;
 }

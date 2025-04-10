@@ -1,7 +1,5 @@
-﻿using FS.FakeTwiter.Application.Interfaces.Users;
-using FS.FakeTwitter.Application.Exceptions;
+﻿using FS.FakeTwitter.Application.Exceptions;
 using FS.FakeTwitter.Domain.Entities;
-using FS.FakeTwitter.Domain.Interfaces;
 
 namespace FS.FakeTwitter.Application.Services;
 

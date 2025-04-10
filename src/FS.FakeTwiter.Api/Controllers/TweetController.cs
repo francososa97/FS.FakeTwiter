@@ -7,6 +7,9 @@ using System;
 
 namespace FS.FakeTwitter.Api.Controllers;
 
+/// <summary>
+/// Controlador para crear y obtener tweetss sobre usuarios.
+/// </summary>
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]

@@ -1,6 +1,4 @@
 ﻿using FS.FakeTwiter.Domain.Entities;
-using FS.FakeTwitter.Application.Interfaces.Follows;
-using FS.FakeTwitter.Domain.Interfaces;
 
 namespace FS.FakeTwitter.Infrastructure.Services;
 
