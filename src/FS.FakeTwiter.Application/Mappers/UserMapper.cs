@@ -32,14 +32,4 @@ public static class UserMapper
             Email = cmd.Email
         };
     }
-    public static OperationResultDto ToResultDto(this int result, string operation)
-    {
-        return new OperationResultDto
-        {
-            Success = result > 0,
-            Message = result > 0
-                ? $"Usuario {operation} exitosamente."
-                : $"No se pudo {operation.ToLower()} el usuario."
-        };
-    }
 }

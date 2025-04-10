@@ -10,5 +10,6 @@ namespace FS.FakeTwitter.Domain.Interfaces
         User Update(User user);
         Task SaveChangesAsync();
         Task DeleteAsync(Guid id);
+        Task<bool> EmailExistsAsync(string email);
     }
 }

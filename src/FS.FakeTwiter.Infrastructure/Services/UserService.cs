@@ -1,4 +1,5 @@
 ﻿using FS.FakeTwiter.Application.Interfaces.Users;
+using FS.FakeTwitter.Application.Exceptions;
 using FS.FakeTwitter.Domain.Entities;
 using FS.FakeTwitter.Domain.Interfaces;
 
@@ -27,9 +28,16 @@ public class UserService : IUserService
 
     public async Task<User> UpdateAsync(User user)
     {
-        var response = _unitOfWork.Users.Update(user);
+        var existingUser = await _unitOfWork.Users.GetByIdAsync(user.Id);
+        if (existingUser is null)
+            throw new NotFoundException("Usuario no encontrado.");
+
+        existingUser.Username = user.Username;
+        existingUser.Email = user.Email;
+
+        var updated = _unitOfWork.Users.Update(existingUser);
         await _unitOfWork.SaveChangesAsync();
-        return response;
+        return updated;
     }
 
     public async Task<int> DeleteAsync(Guid id)
@@ -37,4 +45,10 @@ public class UserService : IUserService
         await _unitOfWork.Users.DeleteAsync(id);
         return await _unitOfWork.SaveChangesAsync();
     }
+
+    public async Task<bool> EmailExistsAsync(string email)
+    {
+        return await _unitOfWork.Users.EmailExistsAsync(email);
+    }
+
 }

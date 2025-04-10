@@ -1,6 +1,5 @@
 ﻿using FS.FakeTwiter.Domain.Entities;
 using FS.FakeTwitter.Application.Interfaces;
-using FS.FakeTwitter.Domain.Interfaces;
 using FS.FakeTwiter.Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,5 +34,10 @@ public class FollowRepository : IFollowRepository
             .Where(f => f.FollowerId == userId)
             .Select(f => f.FolloweeId)
             .ToListAsync();
+    }
+    public async Task<bool> ExistsAsync(string followerId, string followeeId)
+    {
+        return await _context.Follows
+            .AnyAsync(f => f.FollowerId == followerId && f.FolloweeId == followeeId);
     }
 }

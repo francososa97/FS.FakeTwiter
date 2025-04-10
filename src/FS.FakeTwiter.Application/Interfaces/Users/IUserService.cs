@@ -9,4 +9,5 @@ public interface IUserService
     Task<int> AddAsync(User user);
     Task<User> UpdateAsync(User user);
     Task<int> DeleteAsync(Guid id);
+    Task<bool> EmailExistsAsync(string email);
 }

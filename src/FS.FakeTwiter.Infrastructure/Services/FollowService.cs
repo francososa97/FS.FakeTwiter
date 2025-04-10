@@ -35,4 +35,8 @@ public class FollowService : IFollowService
     {
         return _unitOfWork.Follows.GetFollowingAsync(userId);
     }
+    public Task<bool> ExistsAsync(string followerId, string followeeId)
+    {
+        return _unitOfWork.Follows.ExistsAsync(followerId, followeeId);
+    }
 }

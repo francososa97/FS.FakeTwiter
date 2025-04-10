@@ -1,0 +1,1306 @@
+{
+	"info": {
+		"_postman_id": "3b51fd28-81b9-433e-a86f-533baf1a3a08",
+		"name": "FS.FakeTwitter API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15088208"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users by JWT",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImp0aSI6IjNhNzE5OTFmLWQ2YzUtNDI1Ni1iNjI3LTg3NzI2NDY3N2Q3NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJhZG1pbiIsImV4cCI6MTc0NDI5Nzk2OSwiaXNzIjoiRlMuRmFrZVR3aXR0ZXIiLCJhdWQiOiJGUy5GYWtlVHdpdHRlciJ9.4L6nCotwUso0Yd-SL6rOD1SYhqSXOK2K6ojPQoE2SkM"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7069/api/User",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"User"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users By Api Key",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "super-secret-key"
+							},
+							{
+								"key": "SecretKey",
+								"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImp0aSI6IjNhNzE5OTFmLWQ2YzUtNDI1Ni1iNjI3LTg3NzI2NDY3N2Q3NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJhZG1pbiIsImV4cCI6MTc0NDI5Nzk2OSwiaXNzIjoiRlMuRmFrZVR3aXR0ZXIiLCJhdWQiOiJGUy5GYWtlVHdpdHRlciJ9.4L6nCotwUso0Yd-SL6rOD1SYhqSXOK2K6ojPQoE2SkM",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7069/api/User",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"User"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Succes",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:7069/api/User",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"User"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 09 Apr 2025 23:45:28 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": [\n        {\n            \"id\": \"f0cec1d0-5479-4829-b602-1f67575b99a0\",\n            \"username\": \"JuanPerez\",\n            \"email\": \"juanPerez@gmail.com\"\n        }\n    ],\n    \"success\": true,\n    \"message\": \"Operación exitosa\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImp0aSI6IjNhNzE5OTFmLWQ2YzUtNDI1Ni1iNjI3LTg3NzI2NDY3N2Q3NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJhZG1pbiIsImV4cCI6MTc0NDI5Nzk2OSwiaXNzIjoiRlMuRmFrZVR3aXR0ZXIiLCJhdWQiOiJGUy5GYWtlVHdpdHRlciJ9.4L6nCotwUso0Yd-SL6rOD1SYhqSXOK2K6ojPQoE2SkM"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"test2\",\n  \"email\": \"test2@test.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7069/api/User",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"User"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Succes",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"JuanPerez\",\n  \"email\": \"juanPerez@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7069/api/User",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"User"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 09 Apr 2025 23:38:53 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": null,\n    \"success\": false,\n    \"message\": \"Usuario creado exitosamente.\"\n}"
+						},
+						{
+							"name": "Email Existente",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"JuanPerez\",\n  \"email\": \"juanPerez@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7069/api/User",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"User"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 09 Apr 2025 23:44:58 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": null,\n    \"success\": false,\n    \"message\": \"Ya existe un usuario con ese email.\"\n}"
+						},
+						{
+							"name": "Bad Request Correo invalido",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImp0aSI6IjNhNzE5OTFmLWQ2YzUtNDI1Ni1iNjI3LTg3NzI2NDY3N2Q3NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJhZG1pbiIsImV4cCI6MTc0NDI5Nzk2OSwiaXNzIjoiRlMuRmFrZVR3aXR0ZXIiLCJhdWQiOiJGUy5GYWtlVHdpdHRlciJ9.4L6nCotwUso0Yd-SL6rOD1SYhqSXOK2K6ojPQoE2SkM"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"test\",\n  \"email\": \"test\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7069/api/User",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"User"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/problem+json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Apr 2025 12:16:42 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"type\": \"https://tools.ietf.org/html/rfc9110#section-15.5.1\",\n    \"title\": \"One or more validation errors occurred.\",\n    \"status\": 400,\n    \"errors\": {\n        \"Email\": [\n            \"El correo electrónico no es válido.\"\n        ]\n    },\n    \"traceId\": \"00-99d5e891df0bfa013207d7f6bd88c146-4545493b7678d034-00\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "super-secret-key"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7069/api/User/f0cec1d0-5479-4829-b602-1f67575b99a0",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"User",
+								"f0cec1d0-5479-4829-b602-1f67575b99a0"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "succes",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:7069/api/User/f0cec1d0-5479-4829-b602-1f67575b99a0",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"User",
+										"f0cec1d0-5479-4829-b602-1f67575b99a0"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 09 Apr 2025 23:46:36 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"id\": \"f0cec1d0-5479-4829-b602-1f67575b99a0\",\n        \"username\": \"JuanPerez\",\n        \"email\": \"juanPerez@gmail.com\"\n    },\n    \"success\": true,\n    \"message\": \"Operación exitosa\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "super-secret-key"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": \"8c9ca09b-db6d-465a-aa0b-91611e3886f5\",\n        \"username\": \"juanPerezEdit\",\n        \"email\": \"juanPerez@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7069/api/User/8c9ca09b-db6d-465a-aa0b-91611e3886f5",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"User",
+								"8c9ca09b-db6d-465a-aa0b-91611e3886f5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User (Archive flag)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "super-secret-key"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7069/api/User/f0cec1d0-5479-4829-b602-1f67575b99a0",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"User",
+								"f0cec1d0-5479-4829-b602-1f67575b99a0"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Succes",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:7069/api/User/f0cec1d0-5479-4829-b602-1f67575b99a0",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"User",
+										"f0cec1d0-5479-4829-b602-1f67575b99a0"
+									]
+								}
+							},
+							"status": "No Content",
+							"code": 204,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 09 Apr 2025 23:50:41 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								}
+							],
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Follow",
+			"item": [
+				{
+					"name": "Permite a un usuario seguir a otro usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "super-secret-key"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"followerId\": \"28a197be-7c04-428c-815d-c292bd9400bf\",\n  \"followId\": \"c6a769fa-9d7b-4c6f-9f39-b9c77e7e7d87\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7069/api/Follow",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"Follow"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Permite a un usuario seguir a otro usuario",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"followerId\": \"c4b00c7d-ac81-4279-b524-a6bd3be09989\",\n  \"followId\": \"e17ff40f-36c6-437c-b2cf-abb8751d7f99\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7069/api/Follow",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"Follow"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Content-Length",
+									"value": "0"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Apr 2025 12:38:22 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								}
+							],
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "El usuario principal ya sigue al usario existente",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"followerId\": \"28a197be-7c04-428c-815d-c292bd9400bf\",\n  \"followId\": \"c6a769fa-9d7b-4c6f-9f39-b9c77e7e7d87\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7069/api/Follow",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"Follow"
+									]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Apr 2025 12:53:55 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"El usuario 'test1' ya sigue a 'test2'.\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Obtiene la lista de usuarios que siguen a un usuario determinado.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "super-secret-key"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7069/api/Follow/followers/e17ff40f-36c6-437c-b2cf-abb8751d7f99",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"Follow",
+								"followers",
+								"e17ff40f-36c6-437c-b2cf-abb8751d7f99"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "succes",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:7069/api/Follow/followers/e17ff40f-36c6-437c-b2cf-abb8751d7f99",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"Follow",
+										"followers",
+										"e17ff40f-36c6-437c-b2cf-abb8751d7f99"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Apr 2025 12:29:14 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    \"c4b00c7d-ac81-4279-b524-a6bd3be09989\"\n]"
+						}
+					]
+				},
+				{
+					"name": "Obtiene la lista de usuarios a los que sigue un usuario determinado.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "super-secret-key"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7069/api/Follow/following/e17ff40f-36c6-437c-b2cf-abb8751d7f99",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"Follow",
+								"following",
+								"e17ff40f-36c6-437c-b2cf-abb8751d7f99"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "succes",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:7069/api/Follow/following/e17ff40f-36c6-437c-b2cf-abb8751d7f99",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"Follow",
+										"following",
+										"e17ff40f-36c6-437c-b2cf-abb8751d7f99"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Apr 2025 12:39:08 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    \"c4b00c7d-ac81-4279-b524-a6bd3be09989\"\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Tweet",
+			"item": [
+				{
+					"name": "PostTweet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "super-secret-key"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"c4b00c7d-ac81-4279-b524-a6bd3be09989\",\n  \"content\": \"string\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7069/api/Tweet",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"Tweet"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "PostTweet",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"userId\": \"c4b00c7d-ac81-4279-b524-a6bd3be09989\",\n  \"content\": \"string\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7069/api/Tweet",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"Tweet"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Apr 2025 12:26:15 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"tweetId\": {\n        \"data\": \"b5bd07ae-6786-4bd2-92c8-ecfe415d9900\",\n        \"success\": true,\n        \"message\": \"Tweet publicado\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Obtiene todos los tweets publicados por un usuario",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "super-secret-key"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7069/api/Tweet/user/c4b00c7d-ac81-4279-b524-a6bd3be09989",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"Tweet",
+								"user",
+								"c4b00c7d-ac81-4279-b524-a6bd3be09989"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Obtiene todos los tweets publicados por un usuario",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:7069/api/Tweet/user/c4b00c7d-ac81-4279-b524-a6bd3be09989",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"Tweet",
+										"user",
+										"c4b00c7d-ac81-4279-b524-a6bd3be09989"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Apr 2025 12:26:23 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    \"string\",\n    \"string\",\n    \"string\",\n    \"string\",\n    \"string\"\n]"
+						}
+					]
+				},
+				{
+					"name": "Obtiene el timeline (tweets) de los usuarios que sigue un usuario específico.",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "super-secret-key"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7069/api/Tweet/timeline/c4b00c7d-ac81-4279-b524-a6bd3be09989",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"Tweet",
+								"timeline",
+								"c4b00c7d-ac81-4279-b524-a6bd3be09989"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:7069/api/Tweet/timeline/c4b00c7d-ac81-4279-b524-a6bd3be09989",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"Tweet",
+										"timeline",
+										"c4b00c7d-ac81-4279-b524-a6bd3be09989"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Apr 2025 12:37:19 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    \"El código no se rompe solo… alguien lo ayuda 🧟\\u200d♂️\",\n    \"Tip del día: si funciona, ¡commit y salí corriendo! 🏃\\u200d♂️💨\",\n    \"Aprendí más leyendo errores que en cualquier curso 😂\",\n    \"Hoy deployé sin miedo… y funcionó. Estoy en shock 😱 #DevLife\",\n    \"Nada como un buen café y código limpio para arrancar el día ☕💻\"\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Get Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "X-API-KEY",
+								"value": "super-secret-key",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin\",\n  \"password\": \"admin123\",\n  \"twoFactorCode\": \"string\",\n  \"twoFactorRecoveryCode\": \"string\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7069/api/Auth/login",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7069",
+							"path": [
+								"api",
+								"Auth",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "succes",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "X-API-KEY",
+										"value": "super-secret-key"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"admin\",\n  \"password\": \"admin123\",\n  \"twoFactorCode\": \"string\",\n  \"twoFactorRecoveryCode\": \"string\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:7069/api/Auth/login",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "7069",
+									"path": [
+										"api",
+										"Auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 10 Apr 2025 12:07:14 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Kestrel"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImp0aSI6ImM5NjllYjBhLWFmNzQtNDFhNy05OTU5LTA3YjQ4NGNlZGY4NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJhZG1pbiIsImV4cCI6MTc0NDI5NzYzNCwiaXNzIjoiRlMuRmFrZVR3aXR0ZXIiLCJhdWQiOiJGUy5GYWtlVHdpdHRlciJ9.EQDCInlt11VHOmM30qCM1F5CQe7INCz-VxtVsn3Irok\"\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}

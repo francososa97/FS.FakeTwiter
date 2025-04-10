@@ -4,10 +4,12 @@ using FS.FakeTwiter.Application.Features.Users.Commands.UpdateUserCommand;
 using FS.FakeTwiter.Application.Features.Users.Queries.GetAllUsersQuery;
 using FS.FakeTwiter.Application.Features.Users.Queries.GetUserByIdQuery;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FS.FakeTwiter.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase

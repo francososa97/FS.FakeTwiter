@@ -1,10 +1,12 @@
 ﻿using FS.FakeTwitter.Application.Features.Follows.Commands;
 using FS.FakeTwitter.Application.Features.Follows.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FS.FakeTwitter.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]

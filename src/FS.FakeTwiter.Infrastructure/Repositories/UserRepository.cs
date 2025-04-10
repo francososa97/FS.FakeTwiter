@@ -1,8 +1,7 @@
 ﻿using FS.FakeTwiter.Infrastructure.DataAccess;
 using FS.FakeTwitter.Domain.Entities;
 using FS.FakeTwitter.Domain.Interfaces;
-using System;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace FS.FakeTwitter.Infrastructure.Repositories
 {
@@ -16,7 +15,7 @@ namespace FS.FakeTwitter.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<User>> GetAllAsync() =>
-            await _context.Users.Where(u => !u.IsDeleted).ToListAsync();
+               await _context.Users.Where(u => !u.IsDeleted).ToListAsync();
 
         public async Task<User?> GetByIdAsync(Guid id) =>
             await _context.Users.FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
@@ -39,6 +38,11 @@ namespace FS.FakeTwitter.Infrastructure.Repositories
                 user.IsDeleted = true;
                 _context.Users.Update(user);
             }
+        }
+
+        public async Task<bool> EmailExistsAsync(string email)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email && !u.IsDeleted);
         }
 
         public async Task SaveChangesAsync()

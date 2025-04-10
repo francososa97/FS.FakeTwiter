@@ -5,4 +5,5 @@ public interface IFollowService
     Task FollowAsync(string followerId, string followeeId);
     Task<IEnumerable<string>> GetFollowersAsync(string userId);
     Task<IEnumerable<string>> GetFollowingAsync(string userId);
+    Task<bool> ExistsAsync(string followerId, string followeeId);
 }

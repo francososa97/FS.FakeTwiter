@@ -15,6 +15,15 @@ using FS.FakeTwiter.Api.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
+using FS.FakeTwiter.Application.Features.Tweet.Commands.PostTweetCommand;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using FS.FakeTwiter.Application.Features.Follow.Commands.FollowUserCommands;
+using FS.FakeTwiter.Application.Features.Users.Commands.CreateUserCommand;
+using FS.FakeTwiter.Application.Features.Users.Commands.DeleteUserCommand;
+using FS.FakeTwiter.Application.Features.Users.Commands.UpdateUserCommand;
+using Microsoft.AspNetCore.Authentication;
 
 [ExcludeFromCodeCoverage]
 public class Program
@@ -27,12 +36,10 @@ public class Program
         ConfigureMediatR(builder);
         ConfigureDatabase(builder);
         ConfigureSwagger(builder);
-        ConfigureJWT(builder);
+        ConfigureAuthentication(builder);
         var app = builder.Build();
 
         ConfigureMiddleware(app);
-        ConfigureRouting(app);
-
         app.Run();
     }
 
@@ -49,6 +56,16 @@ public class Program
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        // ✅ FluentValidation
+        builder.Services.AddValidatorsFromAssemblyContaining<PostTweetCommandValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<UpdateUserCommandValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<DeleteUserCommandValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<FollowUserCommandValidator>();
+
+        builder.Services.AddFluentValidationAutoValidation();
+        builder.Services.AddFluentValidationClientsideAdapters();
     }
 
     private static void ConfigureMediatR(WebApplicationBuilder builder)
@@ -76,17 +93,71 @@ public class Program
     {
         builder.Services.AddSwaggerGen(c =>
         {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "FS.FakeTwitter API", Version = "v1" });
+
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             c.IncludeXmlComments(xmlPath);
+
+            // 🔐 API Key
+            c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+            {
+                Description = "API Key debe ir en el header: `X-API-KEY: {valor}`",
+                In = ParameterLocation.Header,
+                Name = "X-API-KEY",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "ApiKeyScheme"
+            });
+
+            // 🔐 JWT
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Description = "JWT token usando el esquema Bearer. Ejemplo: `Bearer {token}`",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT"
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "ApiKey"
+                        }
+                    },
+                    Array.Empty<string>()
+                },
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    Array.Empty<string>()
+                }
+            });
         });
+
     }
 
     private static void ConfigureMiddleware(WebApplication app)
     {
         app.UseMiddleware<ErrorHandlerMiddleware>();
         app.UseHttpsRedirection();
-        app.UseMiddleware<ApiKeyMiddleware>();
+
+        app.UseRouting();
+
+        //app.UseMiddleware<ApiKeyMiddleware>();
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseSwagger();
@@ -94,41 +165,49 @@ public class Program
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "FS.FakeTwitter API V1");
         });
-    }
 
-    private static void ConfigureRouting(WebApplication app)
-    {
-        app.UseRouting();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
         });
     }
-    private static void ConfigureJWT(WebApplicationBuilder builder)
+
+    private static void ConfigureAuthentication(WebApplicationBuilder builder)
     {
         var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options =>
-        {
-            options.RequireHttpsMetadata = false;
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidIssuer = jwtSettings["Issuer"],
-                ValidateAudience = true,
-                ValidAudience = jwtSettings["Audience"],
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(
-                    Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!)),
-                ValidateLifetime = true
-            };
-        });
 
+        builder.Services
+            .AddAuthentication("SmartAuth")
+            .AddPolicyScheme("SmartAuth", "JWT o API Key", options =>
+            {
+                options.ForwardDefaultSelector = context =>
+                {
+                    var hasApiKey = context.Request.Headers.ContainsKey("X-API-KEY");
+                    var hasBearer = context.Request.Headers.ContainsKey("Authorization") &&
+                                    context.Request.Headers["Authorization"].ToString().StartsWith("Bearer ");
+                    return hasApiKey ? "ApiKey" :
+                           hasBearer ? JwtBearerDefaults.AuthenticationScheme :
+                           "ApiKey";
+                };
+            })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = jwtSettings["Audience"],
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!)),
+                    ValidateLifetime = true
+                };
+            })
+            .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>("ApiKey", null);
     }
+
 }
 
 

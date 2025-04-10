@@ -24,7 +24,7 @@ public class FollowControllerTests : IClassFixture<CustomWebApplicationFactory<P
         var command = new FollowUserCommand
         {
             FollowerId = "user-1",
-            FolloweeId = "user-2"
+            FollowId = "user-2"
         };
 
         var response = await _client.PostAsJsonAsync("/api/follow", command);
@@ -38,7 +38,7 @@ public class FollowControllerTests : IClassFixture<CustomWebApplicationFactory<P
         await _client.PostAsJsonAsync("/api/follow", new FollowUserCommand
         {
             FollowerId = "user-10",
-            FolloweeId = "user-20"
+            FollowId = "user-20"
         });
 
         var response = await _client.GetAsync("/api/follow/followers/user-20");
@@ -56,7 +56,7 @@ public class FollowControllerTests : IClassFixture<CustomWebApplicationFactory<P
         await _client.PostAsJsonAsync("/api/follow", new FollowUserCommand
         {
             FollowerId = "user-30",
-            FolloweeId = "user-40"
+            FollowId = "user-40"
         });
 
         var response = await _client.GetAsync("/api/follow/following/user-30");

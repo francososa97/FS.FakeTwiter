@@ -3,4 +3,4 @@ using MediatR;
 
 namespace FS.FakeTwiter.Application.Features.Users.Commands.CreateUserCommand;
 
-public record CreateUserCommand(string Username, string Email) : IRequest<OperationResultDto>;
+public record CreateUserCommand(string Username, string Email) : IRequest<ApiResponse<string>>;

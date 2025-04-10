@@ -1,11 +1,13 @@
 ﻿using FS.FakeTwiter.Application.Features.Tweet.Commands.PostTweetCommand;
 using FS.FakeTwitter.Application.Features.Tweets.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
 namespace FS.FakeTwitter.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
