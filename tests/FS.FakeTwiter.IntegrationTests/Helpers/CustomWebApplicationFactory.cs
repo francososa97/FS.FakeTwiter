@@ -1,9 +1,5 @@
-﻿using FS.FakeTwiter.Application.Interfaces.Tweets;
-using FS.FakeTwiter.Infrastructure.DataAccess;
+﻿using FS.FakeTwiter.Infrastructure.DataAccess;
 using FS.FakeTwiter.Infrastructure.UnitOfWork;
-using FS.FakeTwitter.Application.Interfaces.Follows;
-using FS.FakeTwitter.Application.Interfaces;
-using FS.FakeTwitter.Domain.Interfaces;
 using FS.FakeTwitter.Infrastructure.Repositories;
 using FS.FakeTwitter.Infrastructure.Services;
 using Microsoft.AspNetCore.Hosting;

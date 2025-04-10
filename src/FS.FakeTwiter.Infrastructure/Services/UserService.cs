@@ -18,10 +18,10 @@ public class UserService : IUserService
     public async Task<User?> GetByIdAsync(Guid id) =>
         (await _unitOfWork.Users.GetByIdAsync(id));
 
-    public async Task<int> AddAsync(User user)
+    public async Task<User> AddAsync(User user)
     {
-        await _unitOfWork.Users.AddAsync(user);
-        return await _unitOfWork.SaveChangesAsync();
+        var NewUser = await _unitOfWork.Users.AddAsync(user);
+        return NewUser;
     }
 
     public async Task<User> UpdateAsync(User user)

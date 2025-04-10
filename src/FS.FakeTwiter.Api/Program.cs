@@ -19,6 +19,8 @@ using FS.FakeTwiter.Application.Features.Users.Commands.CreateUserCommand;
 using FS.FakeTwiter.Application.Features.Users.Commands.DeleteUserCommand;
 using FS.FakeTwiter.Application.Features.Users.Commands.UpdateUserCommand;
 using Microsoft.AspNetCore.Authentication;
+using FS.FakeTwiter.Application.Interfaces.Cache;
+using FS.FakeTwiter.Infrastructure.Cache;
 
 [ExcludeFromCodeCoverage]
 public class Program
@@ -43,6 +45,7 @@ public class Program
     {
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddHealthChecks();
 
         builder.Services.AddScoped<ITweetRepository, TweetRepository>();
         builder.Services.AddScoped<ITweetService, TweetService>();
@@ -51,8 +54,9 @@ public class Program
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-        // ✅ FluentValidation
+        builder.Services.AddMemoryCache();
+        builder.Services.AddScoped<ICacheHelper, CacheHelper>();
+        // FluentValidation
         builder.Services.AddValidatorsFromAssemblyContaining<PostTweetCommandValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<UpdateUserCommandValidator>();
@@ -161,10 +165,9 @@ public class Program
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "FS.FakeTwitter API V1");
         });
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
+        app.MapControllers();
+        app.MapHealthChecks("/health");
+
     }
 
     private static void ConfigureAuthentication(WebApplicationBuilder builder)

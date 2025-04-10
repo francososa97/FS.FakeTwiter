@@ -5,6 +5,7 @@ using FS.FakeTwiter.Application.Features.Users.Queries.GetAllUsersQuery;
 using FS.FakeTwiter.Application.Features.Users.Queries.GetUserByIdQuery;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FS.FakeTwiter.Api.Controllers;
@@ -52,6 +53,10 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserCommand command)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new { error = "Datos inválidos" });
+        }
         var response = await _mediator.Send(command);
         return Ok(response);
     }
@@ -66,8 +71,8 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserCommand command)
     {
         if (id != command.Id) return BadRequest();
-        await _mediator.Send(command);
-        return NoContent();
+        var response = await _mediator.Send(command);
+        return Ok(response);
     }
 
     /// <summary>

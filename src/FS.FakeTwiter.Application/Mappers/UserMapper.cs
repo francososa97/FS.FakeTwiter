@@ -27,7 +27,7 @@ public static class UserMapper
     {
         return new User
         {
-            Id = Guid.NewGuid(),
+            Id = cmd.Id,
             Username = cmd.Username,
             Email = cmd.Email
         };

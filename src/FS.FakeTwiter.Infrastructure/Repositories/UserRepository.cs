@@ -19,9 +19,11 @@ namespace FS.FakeTwitter.Infrastructure.Repositories
         public async Task<User?> GetByIdAsync(Guid id) =>
             await _context.Users.FirstOrDefaultAsync(u => u.Id == id && !u.IsDeleted);
 
-        public async Task AddAsync(User user)
+        public async Task<User> AddAsync(User user)
         {
-            await _context.Users.AddAsync(user);
+            var newUser = await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
+            return user;
         }
 
         public User Update(User user)

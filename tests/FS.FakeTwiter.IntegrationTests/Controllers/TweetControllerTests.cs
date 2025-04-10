@@ -1,117 +1,98 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
+using Xunit;
+using FS.FakeTwitter.IntegrationTests.Helpers;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FS.FakeTwiter.Application.Features.Tweet.Commands.PostTweetCommand;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using Xunit;
+using FS.FakeTwitter.Application.Features.Follows.Commands;
+using System.Linq;
 
-namespace FS.FakeTwiter.IntegrationTests.Controllers;
+namespace FS.FakeTwitter.IntegrationTests.Controllers;
 
-public class TweetControllerTests : IClassFixture<CustomWebApplicationFactory<Program>>
+public class TweetControllerTests : IntegrationTestBase
 {
-    private readonly HttpClient _client;
-
-    public TweetControllerTests(CustomWebApplicationFactory<Program> factory)
-    {
-        _client = factory.CreateClient();
-    }
+    public TweetControllerTests(CustomWebApplicationFactory<Program> factory) : base(factory) { }
 
     [Fact]
-    public async Task PostTweet_ShouldReturn_TweetId()
+    public async Task Should_Post_Tweet_Successfully()
     {
-        // Arrange
-        var command = new PostTweetCommand
+        await AuthorizeAsync();
+        var userId = await CreateTestUser("tweet");
+
+        var tweetCommand = new PostTweetCommand()
         {
-            UserId = "test-user",
-            Content = "Este es un tweet de prueba."
+            UserId = userId,
+            Content = "Este es un tweet de prueba"
         };
 
-        // Act
-        var response = await _client.PostAsJsonAsync("/api/tweet", command);
-
-        // Assert
+        var response = await _client.PostAsJsonAsync("/api/tweet", tweetCommand);
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<Dictionary<string, Guid>>();
-        Assert.True(result!.ContainsKey("tweetId"));
+
+        var json = await response.Content.ReadFromJsonAsync<JsonElement>();
+        var tweetIdObj = json.GetProperty("tweetId");
+        var tweetId = tweetIdObj.GetProperty("data").GetString();
+
+        Assert.False(string.IsNullOrEmpty(tweetId));
     }
 
     [Fact]
-    public async Task GetUserTweets_ShouldReturn_TweetsForUser()
+    public async Task Should_Get_User_Tweets()
     {
-        // Arrange
-        var userId = "user-tweets";
-        await _client.PostAsJsonAsync("/api/tweet", new PostTweetCommand
+        await AuthorizeAsync();
+        var userId = await CreateTestUser("tweet-get");
+
+        // Publicar un tweet
+        var tweetCommand = new
         {
             UserId = userId,
-            Content = "Primer tweet"
-        });
+            Content = "Tweet de prueba para verificar el GET"
+        };
+        var post = await _client.PostAsJsonAsync("/api/tweet", tweetCommand);
+        post.EnsureSuccessStatusCode();
 
-        await _client.PostAsJsonAsync("/api/tweet", new PostTweetCommand
-        {
-            UserId = userId,
-            Content = "Segundo tweet"
-        });
-
-        // Act
+        // Consultar los tweets del usuario
         var response = await _client.GetAsync($"/api/tweet/user/{userId}");
-
-        // Assert
         response.EnsureSuccessStatusCode();
+
         var tweets = await response.Content.ReadFromJsonAsync<List<string>>();
-        Assert.Equal(2, tweets!.Count);
+        Assert.NotNull(tweets);
+        Assert.Contains("Tweet de prueba para verificar el GET", tweets);
     }
 
     [Fact]
-    public async Task GetTimeline_ShouldIncludeTweetsFromFollowedUsers()
+    public async Task Should_Get_Timeline()
     {
-        // Arrange
-        var follower = "user-a";
-        var followed = "user-b";
+        await AuthorizeAsync();
 
-        // user-a sigue a user-b
-        await _client.PostAsJsonAsync("/api/follow", new { FollowerId = follower, FolloweeId = followed });
+        var followedId = await CreateTestUser("timeline-followed");
+        var followerId = await CreateTestUser("timeline-follower");
 
-        // user-b publica un tweet
-        await _client.PostAsJsonAsync("/api/tweet", new PostTweetCommand
+        // Seguir al usuario
+        var followCommand = new FollowUserCommand()
         {
-            UserId = followed,
-            Content = "Tweet de seguido"
+            FollowerId = followerId,
+            FollowId = followedId
+        };
+        var follow = await _client.PostAsJsonAsync("/api/follow", followCommand);
+        follow.EnsureSuccessStatusCode();
+
+        // Publicar un tweet como seguido
+        var tweet = await _client.PostAsJsonAsync("/api/tweet", new
+        {
+            UserId = followedId,
+            Content = "Tweet desde seguido para timeline"
         });
+        tweet.EnsureSuccessStatusCode();
 
-        // Act
-        var response = await _client.GetAsync($"/api/tweet/timeline/{follower}");
-
-        // Assert
+        // Obtener timeline del follower
+        var response = await _client.GetAsync($"/api/tweet/timeline/{followerId}");
         response.EnsureSuccessStatusCode();
+
         var timeline = await response.Content.ReadFromJsonAsync<List<string>>();
         Assert.Single(timeline);
-        Assert.Contains("Tweet de seguido", timeline[0]);
+        Assert.NotNull(timeline);
+        Assert.Contains("Tweet desde seguido para timeline", timeline.FirstOrDefault());
     }
-    [Fact]
-    public async Task GetTimeline_ShouldIncludeTweetsFromFollowedUsersSimple()
-    {
-        try
-        {
-            var response = await _client.GetAsync("/api/tweet/timeline/user-a");
-
-            var content = await response.Content.ReadAsStringAsync();
-            Console.WriteLine("❗ Response content: " + content);
-
-            response.EnsureSuccessStatusCode(); // Falla acá si status 500
-
-            var timeline = await response.Content.ReadFromJsonAsync<List<string>>();
-            Assert.Single(timeline);
-            Assert.Contains("Tweet de seguido", timeline[0]);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("🔥 Excepción: " + ex.Message);
-            throw;
-        }
-    }
-
-
 }

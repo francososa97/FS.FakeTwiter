@@ -18,7 +18,7 @@ public interface IUserService
     /// <summary>
     /// Agrega un nuevo usuario.
     /// </summary>
-    Task<int> AddAsync(User user);
+    Task<User> AddAsync(User user);
 
     /// <summary>
     /// Actualiza un usuario existente.

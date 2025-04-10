@@ -18,7 +18,7 @@ public interface IUserRepository
     /// <summary>
     /// Agrega un nuevo usuario.
     /// </summary>
-    Task AddAsync(User user);
+    Task<User> AddAsync(User user);
 
     /// <summary>
     /// Actualiza los datos de un usuario.

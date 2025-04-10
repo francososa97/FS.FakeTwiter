@@ -25,6 +25,10 @@
 		<ProjectReference Include="..\..\src\FS.FakeTwiter.Infrastructure\FS.FakeTwiter.Infrastructure.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Features\Tweet\Command\" />
+	</ItemGroup>
+
 	<Target Name="CopyTesthostDepsJson" AfterTargets="Build">
 		<PropertyGroup>
 			<ApiOutputDir>$(MSBuildThisFileDirectory)..\..\src\FS.FakeTwiter.Api\bin\Debug\net8.0\</ApiOutputDir>

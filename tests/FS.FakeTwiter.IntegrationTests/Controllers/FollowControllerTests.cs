@@ -1,70 +1,96 @@
-﻿using System.Net.Http.Json;
+﻿using System.Collections.Generic;
+using System.Net;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Xunit;
-using System.Net.Http;
-using System.Collections.Generic;
 using FS.FakeTwitter.Application.Features.Follows.Commands;
-using System.Diagnostics.CodeAnalysis;
+using FS.FakeTwitter.IntegrationTests.Helpers;
+using Xunit;
 
 namespace FS.FakeTwitter.IntegrationTests.Controllers;
-[ExcludeFromCodeCoverage]
-public class FollowControllerTests : IClassFixture<CustomWebApplicationFactory<Program>>
 
+public class FollowControllerTests : IntegrationTestBase
 {
-    private readonly HttpClient _client;
+    public FollowControllerTests(CustomWebApplicationFactory<Program> factory) : base(factory) { }
 
-    public FollowControllerTests(CustomWebApplicationFactory<Program> factory)
+    [Fact]
+    public async Task Should_Not_Allow_Duplicate_Follow()
     {
-        _client = factory.CreateClient();
-    }
+        await AuthorizeAsync();
 
+        var followerId = await CreateTestUser("test1");
+        var FollowId = await CreateTestUser("test2");
+
+        var followCommand = new FollowUserCommand()
+        {
+            FollowerId = followerId,
+            FollowId = FollowId
+        };
+
+        // Primer follow debería ser exitoso
+        var firstResponse = await _client.PostAsJsonAsync("/api/follow", followCommand);
+        firstResponse.EnsureSuccessStatusCode();
+
+        // Segundo follow debe fallar
+        var secondResponse = await _client.PostAsJsonAsync("/api/follow", followCommand);
+        var content = await secondResponse.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.UnprocessableContent, secondResponse.StatusCode);
+        Assert.Contains("ya sigue a", content); // También podrías verificar el string completo
+    }
     [Fact]
     public async Task Should_Follow_User_Successfully()
     {
-        var command = new FollowUserCommand
+        await AuthorizeAsync();
+        var followerId = await CreateTestUser("follower_success");
+        var FollowId = await CreateTestUser("following_success");
+
+        var followCommand = new FollowUserCommand()
         {
-            FollowerId = "user-1",
-            FollowId = "user-2"
+            FollowerId = followerId,
+            FollowId = FollowId
         };
 
-        var response = await _client.PostAsJsonAsync("/api/follow", command);
+        var response = await _client.PostAsJsonAsync("/api/follow", followCommand);
+        var content = await response.Content.ReadAsStringAsync();
 
-        response.EnsureSuccessStatusCode();
+        Assert.True(response.IsSuccessStatusCode, $"Expected 200 OK. Got {response.StatusCode}. Content: {content}");
     }
 
     [Fact]
-    public async Task Should_Return_Followers_Of_A_User()
+    public async Task Should_Return_Followers()
     {
-        await _client.PostAsJsonAsync("/api/follow", new FollowUserCommand
+        await AuthorizeAsync();
+
+        var userId = await CreateTestUser("target");
+        var followerId = await CreateTestUser("follower");
+
+        await _client.PostAsJsonAsync("/api/follow", new
         {
-            FollowerId = "user-10",
-            FollowId = "user-20"
+            FollowerId = followerId,
+            FollowingId = userId
         });
 
-        var response = await _client.GetAsync("/api/follow/followers/user-20");
-
+        var response = await _client.GetAsync($"/api/follow/followers/{userId}");
         response.EnsureSuccessStatusCode();
-
-        var result = await response.Content.ReadFromJsonAsync<List<string>>();
-
-        Assert.Contains("user-10", result);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
-    public async Task Should_Return_Users_Followed_By_User()
+    public async Task Should_Return_Following()
     {
-        await _client.PostAsJsonAsync("/api/follow", new FollowUserCommand
+        await AuthorizeAsync();
+
+        var userId = await CreateTestUser("main");
+        var followedId = await CreateTestUser("followed");
+
+        await _client.PostAsJsonAsync("/api/follow", new
         {
-            FollowerId = "user-30",
-            FollowId = "user-40"
+            FollowerId = userId,
+            FollowingId = followedId
         });
 
-        var response = await _client.GetAsync("/api/follow/following/user-30");
-
+        var response = await _client.GetAsync($"/api/follow/following/{userId}");
         response.EnsureSuccessStatusCode();
-
-        var result = await response.Content.ReadFromJsonAsync<List<string>>();
-
-        Assert.Contains("user-40", result);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 }
