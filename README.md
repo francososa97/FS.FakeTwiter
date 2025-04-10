@@ -242,7 +242,7 @@ dotnet run
 - [x] Control de errores con excepciones personalizadas
 - [x] Script para test coverage automatizado
 - [x] Archivos Dockerfile y docker-compose.yml creados (funcionalidad pendiente de validación completa)
-- [x] Se logró una **reducción de tiempo de respuesta de 19 ms a 7 ms** (milisegundos) promedio en endpoints de lectura intensiva mediante la incorporación de cache (`IMemoryCache`) en consultas de timelines y seguidores.
+- [x] Se logró una **reducción de tiempo de respuesta de 19 ms a 3ms** (milisegundos) promedio en endpoints de lectura intensiva mediante la incorporación de cache (`IMemoryCache`) en consultas de timelines y seguidores.
 
 ---
 
