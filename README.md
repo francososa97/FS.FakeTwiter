@@ -102,12 +102,40 @@ Set-ExecutionPolicy RemoteSigned -Scope Process
 ## 📁 Estructura del Proyecto
 
 ```plaintext
+
 FS.FakeTwitter.sln
-├── FS.FakeTwitter.Api             # API + Swagger + Auth
-├── FS.FakeTwitter.Application     # CQRS + Reglas de negocio
-├── FS.FakeTwitter.Domain          # Entidades + Interfaces
-├── FS.FakeTwitter.Infrastructure  # Repositorios + DB + Servicios
-├── FS.FakeTwiter                  # Base compartida (si escala)
+│
+├── src/
+│   ├── FS.FakeTwitter.Api             # API + Swagger + Auth
+│   ├── FS.FakeTwitter.Application     # CQRS + Reglas de negocio
+│   ├── FS.FakeTwitter.Domain          # Entidades + Interfaces
+│   └── FS.FakeTwitter.Infrastructure  # Repositorios, servicios, DbContext, UnitOfWork
+│
+├── tests/
+│   ├── FS.FakeTwitter.UnitTests         # Unit tests
+│   └── FS.FakeTwitter.IntegrationTests  # Integration tests + coverage
+│
+├── Collections/
+│   └── 🧪 FS.FakeTwitter API.postman_collection.json
+│       Colección de Postman para probar los endpoints de la API.
+│       Incluye ejemplos de login, tweets, timeline, follow/unfollow.
+│
+├── Docs/
+│   ├── 📄 api-documentation.pdf
+│   │   Documentación de la API generada con Swagger.
+│   │   Incluye ejemplos de uso y respuesta de cada endpoint.
+│   │
+│   ├── 📘 architecture.md
+│   │   Documento explicando la arquitectura Onion actual del proyecto.
+│   │   Detalla las capas: Domain, Application, Infrastructure y Api.
+│   │
+│   ├── 🧠 Bd-Escalabilidad.md
+│   │   Consideraciones técnicas para escalar la base de datos.
+│   │   Incluye detalles sobre PostgreSQL, JSONB, sharding y uso de Redis/Mongo.
+│   │
+│   └── 💼 BUSINESS.md
+│       Documento con decisiones técnicas y reglas asumidas.
+│       Incluye objetivos del sistema, tecnologías elegidas y posibles mejoras futuras.
 ```
 
 ---
@@ -191,19 +219,6 @@ http://localhost:5000/swagger
 
 ---
 
-## 🐳 Dockerización
-
-```bash
-docker-compose up --build
-```
-
-Levanta:
-
-- API en `http://localhost:5000`
-- PostgreSQL local
-
----
-
 ## ✅ Ejecutar el proyecto localmente
 
 ```bash
@@ -220,13 +235,14 @@ dotnet run
 - [x] FluentValidation integrado
 - [x] Validaciones asíncronas en handlers
 - [x] Autenticación JWT + API Key
-- [x] Documentación Swagger + Docker + Tests
+- [x] Documentación Swagger + Tests
 - [x] 97% cobertura con reporte automatizado
 - [x] Swagger documentado y funcional
 - [x] EF Core InMemory + UoW operativo
 - [x] Control de errores con excepciones personalizadas
 - [x] Script para test coverage automatizado
-- [x] Dockerfile y docker-compose configurados
+- [x] Archivos Dockerfile y docker-compose.yml creados (funcionalidad pendiente de validación completa)
+- [x] Se logró una **reducción de tiempo de respuesta de 19 ms a 7 ms** (milisegundos) promedio en endpoints de lectura intensiva mediante la incorporación de cache (`IMemoryCache`) en consultas de timelines y seguidores.
 
 ---
 

@@ -46,4 +46,18 @@ public interface ICacheHelper
     /// </summary>
     /// <param name="userId">ID del usuario del cual se debe invalidar el timeline.</param>
     void RemoveTimelineCache(string userId);
+
+    /// <summary>
+    /// Obtiene la lista de tweets de un usuario desde caché o los consulta si no están cacheados.
+    /// </summary>
+    /// <param name="userId">ID del usuario cuyos tweets se quieren obtener.</param>
+    /// <param name="factory">Función asíncrona que obtiene los datos si no están en caché.</param>
+    /// <returns>Enumerable de strings con el contenido de los tweets.</returns>
+    Task<IEnumerable<string>> GetOrSetUserTweetsAsync(string userId, Func<Task<IEnumerable<string>>> factory);
+
+    /// <summary>
+    /// Elimina del caché los tweets asociados al usuario indicado.
+    /// </summary>
+    /// <param name="userId">ID del usuario cuyos tweets deben eliminarse del caché.</param>
+    void RemoveUserTweetsCache(string userId);
 }

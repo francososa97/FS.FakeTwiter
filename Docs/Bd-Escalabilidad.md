@@ -59,10 +59,10 @@ FS.FakeTwitter.sln
 
 ## 🔄 Sincronización Relacional + NoSQL (CQRS Read Store)
 
-| Uso     | Motor de DB     | Objetivo                           |
+| Uso     | Motor de DB      | Objetivo                           |
 |---------|------------------|------------------------------------|
-| Commands | PostgreSQL       | Persistencia confiable y transaccional |
-| Queries  | MongoDB o Redis  | Lecturas ultra rápidas y escalables   |
+| Commands| PostgreSQL      | Persistencia confiable y transaccional |
+| Queries | MongoDB o Redis | Lecturas ultra rápidas y escalables   |
 
 **Ejemplo de JSONB en PostgreSQL para seguidores:**
 ```json
@@ -129,6 +129,9 @@ FS.FakeTwitter.sln
 - ElasticSearch para búsqueda avanzada
 - Clustering + Multi-tenant architecture
 - CDN para contenido estático
+- Contenerización con Docker para facilitar la portabilidad y despliegue del sistema
+
+Se configuró Docker con los archivos necesarios (Dockerfile, docker-compose.override.yml, etc.), pero por cuestiones de tiempo no se finalizó la ejecución completa en entorno real.
 
 ---
 

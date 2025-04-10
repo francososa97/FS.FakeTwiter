@@ -82,9 +82,9 @@ FS.FakeTwitter.sln
 
 ## 📈 Escalabilidad y Performance
 
-El sistema soporta hasta 1 millón de usuarios concurrentes mediante:
+El sistema soportaria hasta 1 millón de usuarios concurrentes mediante:
 
-- API escalable vía Docker + Kubernetes
+
 - CQRS para desacoplar escritura y lectura
 - Redis/MongoDB como ReadStore
 - Event Sourcing opcional con Kafka o RabbitMQ
@@ -214,8 +214,6 @@ Este diseño permite escalar horizontalmente tanto la API como la capa de base d
 - Integration tests para controllers
 - Cobertura del 100%
 
-
-
 ## Base de datos
 
 Durante el desarrollo y testing se utiliza `Microsoft.EntityFrameworkCore.InMemory` para mantener el proyecto ligero y sin dependencias externas. Esta implementaci�n permite levantar y testear el sistema f�cilmente, persistiendo datos en memoria.
@@ -242,10 +240,10 @@ Presentation (Api) │ ├── Application (CQRS, servicios, DTOs, lógica de 
 
 ## 🔧 Componentes Clave
 
-| Componente                      | Propósito                                                         |
-| ------------------------------ | ----------------------------------------------------------------- |
+| Componente                     | Propósito                                                        |
+| ------------------------------ | -----------------------------------------------------------------|
 | `MediatR`                      | Implementación de CQRS (Commands y Queries con Handlers)         |
-| `Entity Framework Core (InMemory)` | ORM y persistencia en memoria para pruebas                          |
+| `Entity Framework Core (InMemory)` | ORM y persistencia en memoria para pruebas                   |
 | `Swagger (Swashbuckle)`        | Documentación y exploración de la API                            |
 | `Unit of Work`                 | Coordinación de múltiples repositorios                           |
 | `Middlewares personalizados`   | Manejo centralizado de errores y excepciones personalizadas      |
@@ -274,8 +272,17 @@ Presentation (Api) │ ├── Application (CQRS, servicios, DTOs, lógica de 
 
 ## 📂 Estructura General del Proyecto
 
-FS.FakeTwitter.sln │ ├── FS.FakeTwitter.Api # Capa de presentación ├── FS.FakeTwitter.Application # Lógica de negocio, CQRS, servicios ├── FS.FakeTwitter.Domain # Entidades e interfaces del dominio ├── FS.FakeTwitter.Infrastructure # Acceso a datos, EF Core, repositorios ├── tests # Pruebas unitarias e integración
-
+FS.FakeTwitter.sln
+│
+├── src/
+│   ├── FS.FakeTwitter.Api             # Capa de presentación (controllers, Swagger, middlewares)
+│   ├── FS.FakeTwitter.Application     # CQRS, servicios, DTOs, lógica de negocio
+│   ├── FS.FakeTwitter.Domain          # Entidades y contratos del dominio
+│   └── FS.FakeTwitter.Infrastructure  # Repositorios, servicios, DbContext, UnitOfWork
+│
+├── tests/
+│   ├── FS.FakeTwitter.UnitTests         # Unit tests
+│   └── FS.FakeTwitter.IntegrationTests  # Integration tests + coverage
 
 ---
 
@@ -344,7 +351,7 @@ A continuación, se describen las estrategias técnicas y arquitectónicas propu
 
 ### ✅ Resumen de Beneficios
 
-| Técnica                    | Beneficio                              |
+| Técnica                   | Beneficio                              |
 |---------------------------|----------------------------------------|
 | CQRS + MediatR            | Escala lectura/escritura separadamente |
 | PostgreSQL + JSONB        | Reducción de JOINs complejos           |
@@ -381,7 +388,7 @@ Se aplicó el patrón **Onion Architecture**, con capas desacopladas:
 
 ## 🧠 Decisiones Técnicas Clave
 
-| Tema                       | Decisión                                                                 |
+| Tema                      | Decisión                                                                 |
 |---------------------------|--------------------------------------------------------------------------|
 | Arquitectura              | Onion Architecture con CQRS + MediatR                                    |
 | ORM                       | Entity Framework Core (InMemory para desarrollo/pruebas)                 |

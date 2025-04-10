@@ -37,10 +37,12 @@ public class TweetService : ITweetService
 
     public async Task<IEnumerable<string>> GetUserTweetsAsync(string userId)
     {
-        var tweets = await _unitOfWork.Tweets.GetByUserIdAsync(userId);
-        return tweets.Select(t => t.Content);
+        return await _cacheHelper.GetOrSetUserTweetsAsync(userId, async () =>
+        {
+            var tweets = await _unitOfWork.Tweets.GetByUserIdAsync(userId);
+            return tweets.Select(t => t.Content);
+        });
     }
-
     public async Task<IEnumerable<string>> GetTimelineAsync(string userId)
     {
         return await _cacheHelper.GetOrSetTimelineAsync(userId, async () =>

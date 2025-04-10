@@ -1,213 +1,115 @@
-# Arquitectura y Diseño de FS.FakeTwitter
+# 🏛️ Arquitectura de FS.FakeTwitter
 
-## 🧱 Estilo Arquitectónico
+## 🧱 Estilo Arquitectónico: Onion Architecture
 
-Se aplicó el patrón **Onion Architecture**, dividido en 4 capas principales:
+Se utilizó el patrón **Onion Architecture** con el objetivo de lograr una estructura de software desacoplada, mantenible y altamente testeable. La arquitectura está organizada en capas concéntricas:
 
-- **Domain**: Entidades y contratos (interfaces de repositorio)
-- **Application**: Casos de uso, comandos y queries (CQRS con MediatR)
-- **Infrastructure**: Acceso a datos, implementación de repositorios y servicios
-- **Api**: Entrada HTTP (Controllers, Swagger, Middlewares)
+- **Domain**: Entidades y contratos (interfaces)
+- **Application**: Casos de uso, CQRS (Commands y Queries con MediatR), servicios, validaciones y DTOs
+- **Infrastructure**: Implementaciones de repositorios, acceso a datos, UnitOfWork, servicios auxiliares y cache
+- **Api**: Controllers, middlewares, configuración de Swagger, seguridad, puntos de entrada
 
+```plaintext
 FS.FakeTwitter.sln
 │
 ├── src/
-│   ├── FS.FakeTwitter.Api             # Capa de presentación (controllers, Swagger, middlewares)
-│   ├── FS.FakeTwitter.Application     # CQRS, servicios, DTOs, lógica de negocio
-│   ├── FS.FakeTwitter.Domain          # Entidades y contratos del dominio
-│   └── FS.FakeTwitter.Infrastructure  # Repositorios, servicios, DbContext, UnitOfWork
+│   ├── FS.FakeTwitter.Api             # Capa de presentación (controllers, middlewares, Swagger)
+│   ├── FS.FakeTwitter.Application     # CQRS, servicios, DTOs, validaciones, interfaces
+│   ├── FS.FakeTwitter.Domain          # Entidades y contratos (interfaces de repositorio)
+│   └── FS.FakeTwitter.Infrastructure  # EF Core, UnitOfWork, Repositorios, Cache
 │
 ├── tests/
-│   ├── FS.FakeTwitter.UnitTests         # Unit tests
-│   └── FS.FakeTwitter.IntegrationTests  # Integration tests + coverage
-
-
-> Esta separación permite desacoplar la lógica del negocio de los detalles de infraestructura.
-
----
-
-## 🛠️ Componentes y Tecnologías Clave
-
-- **.NET 8 + C#**
-- **Entity Framework Core** (InMemory en desarrollo, PostgreSQL sugerido para producción)
-- **MediatR**: para implementar CQRS
-- **Swagger**: para la exploración de API
-- **Custom Middlewares**: manejo centralizado de errores
-- **Unit of Work + Repositorios**
-
----
-
-## 🗄️ Base de Datos recomendada (Producción)
-
-Se recomienda utilizar **PostgreSQL**, por los siguientes motivos:
-
-- Soporte robusto para queries complejas y relaciones
-- Open Source y ampliamente adoptado
-- Optimizado para lecturas con `GIN indexes`, `materialized views` y `partitioning`
-
-> En desarrollo se utilizó EF Core InMemory para facilitar el testing.
-
----
-
-## 📈 Escalabilidad y Performance
-
-Este diseño permite escalar horizontalmente tanto la API como la capa de base de datos:
-
-- ✅ Queries desacopladas mediante MediatR (CQRS)
-- ✅ El modelo de datos está optimizado para lecturas (p.ej., timeline por usuario)
-- ✅ La infraestructura puede escalar con:
-  - Load balancers (Ej: NGINX)
-  - Cache distribuido (Ej: Redis)
-  - Mensajería asincrónica (Ej: RabbitMQ)
-  - Sharding o particionado por ID de usuario
-- ✅ El código es testable y mantenible
-
----
-
-## 🧪 Tests
-
-- Unit tests para cada handler de comando/query
-- Integration tests para controllers
-- Cobertura del 100%
-
-
-
-## Base de datos
-
-Durante el desarrollo y testing se utiliza `Microsoft.EntityFrameworkCore.InMemory` para mantener el proyecto ligero y sin dependencias externas. Esta implementaci�n permite levantar y testear el sistema f�cilmente, persistiendo datos en memoria.
-
-### Alternativa para producci�n
-
-Para producci�n se sugiere el uso de **PostgreSQL**, por su soporte a relaciones complejas, facilidad de escalar horizontalmente y robustez frente a cargas altas.
-
-
-# 🏛️ Arquitectura High-Level – FS.FakeTwitter
-
-> Esta documentación describe la arquitectura y componentes utilizados en la solución del challenge técnico de Ualá.
-
----
-
-## 🧱 Arquitectura Utilizada: Onion Architecture
-
-La solución sigue los principios de la arquitectura en capas (Onion), asegurando una separación de responsabilidades clara:
-
-Presentation (Api) │ ├── Application (CQRS, servicios, DTOs, lógica de casos de uso) │ └── MediatR (Commands / Queries / Handlers) │ ├── Domain (Entidades + Interfaces del dominio) │ └── Infrastructure (Repositorios, acceso a datos, EF Core, UnitOfWork)
-
-
----
-
-## 🔧 Componentes Clave
-
-| Componente                      | Propósito                                                         |
-| ------------------------------ | ----------------------------------------------------------------- |
-| `MediatR`                      | Implementación de CQRS (Commands y Queries con Handlers)         |
-| `Entity Framework Core (InMemory)` | ORM y persistencia en memoria para pruebas                          |
-| `Swagger (Swashbuckle)`        | Documentación y exploración de la API                            |
-| `Unit of Work`                 | Coordinación de múltiples repositorios                           |
-| `Middlewares personalizados`   | Manejo centralizado de errores y excepciones personalizadas      |
-| `xUnit + coverlet`             | Tests unitarios y de integración con cobertura                   |
-| `reportgenerator`              | Generación de reportes de cobertura en HTML                      |
-
----
-
-## 🧠 Principios y Patrones Aplicados
-
-- **CQRS (Command Query Responsibility Segregation)**: separación entre operaciones de lectura y escritura usando MediatR.
-- **DRY y SOLID**: el código sigue principios de diseño limpio y reutilizable.
-- **DTOs y Mappers**: se utiliza una capa de transformación entre entidades y objetos de transferencia.
-- **Manejo de errores**: mediante excepciones personalizadas (`NotFoundException`, `ValidationException`, etc.).
-
----
-
-## 🧪 Testing
-
-- ✅ Pruebas unitarias completas.
-- ✅ Pruebas de integración con WebApplicationFactory.
-- ✅ 100% cobertura de código validada con Coverlet + ReportGenerator.
-- ✅ Estrategia de testing ubicada según la arquitectura Onion.
-
----
-
-## 📂 Estructura General del Proyecto
-
-FS.FakeTwitter.sln │ ├── FS.FakeTwitter.Api # Capa de presentación ├── FS.FakeTwitter.Application # Lógica de negocio, CQRS, servicios ├── FS.FakeTwitter.Domain # Entidades e interfaces del dominio ├── FS.FakeTwitter.Infrastructure # Acceso a datos, EF Core, repositorios ├── tests # Pruebas unitarias e integración
-
-
----
-
-## 🚀 Consideraciones de Escalabilidad y Extensibilidad
-A continuación, se describen las estrategias técnicas y arquitectónicas propuestas para escalar el sistema FS.FakeTwitter y soportar al menos 1 millón de usuarios activos al mismo tiempo.
-
----
-
-### 🧱 Arquitectura Modular y Desacoplada
-
-- **Onion Architecture** + **CQRS con MediatR**: permite aislar la lógica de negocio, facilitando el escalado por capas.
-- **Separación de responsabilidad** en comandos (escritura) y queries (lectura) permite escalar cada una por separado.
-
----
-
-### 🗃️ Base de Datos Escalable
-
-- **Lecturas**: se sugiere utilizar **MongoDB** o **Redis** como proyección CQRS para los timelines (rápido acceso y agregación).
-- **Escrituras**: utilizar **PostgreSQL** con índices, `partitioning` y `materialized views`.
-- **Seguidores**: almacenar los seguidores como un campo JSONB en PostgreSQL para cada usuario (actualizable por eventos), reduciendo `JOINs`.
-
-```json
-{
-  "followers": ["user-1", "user-2", "user-3"]
-}
+│   ├── FS.FakeTwitter.UnitTests         # Tests unitarios por handler / validador
+│   └── FS.FakeTwitter.IntegrationTests  # Tests de integración con WebApplicationFactory
 ```
 
 ---
 
-### 🧠 Caching
+## ⚙️ Tecnologías y Librerías Clave
 
-- **Redis** para cachear timelines, listas de seguidores, últimos tweets, etc.
-- TTL corto para consistencia eventual.
-
----
-
-### 💬 Event Driven Architecture (EDA)
-
-- **RabbitMQ** o **Kafka** para desacoplar acciones como:
-  - Usuario sigue a otro ➝ genera evento ➝ se actualiza la proyección en MongoDB.
-  - Nuevo tweet ➝ notificación a seguidores ➝ colas de envío async.
-
----
-
-### 🧵 Concurrencia y Rendimiento
-
-- **Load Balancers** como NGINX o Azure Front Door.
-- **Instancias horizontales** de la API con **Kubernetes** o **Docker Swarm**.
-- **Rate limiting** y control de sesiones si se agrega autenticación real.
+- **.NET 8 + C#**: framework principal
+- **Entity Framework Core (InMemory)**: acceso a datos (test/dev)
+- **PostgreSQL**: motor recomendado para producción
+- **MediatR**: implementación de CQRS con Commands, Queries y Handlers
+- **FluentValidation**: validaciones por comando, desacopladas
+- **Swagger (Swashbuckle)**: documentación de la API
+- **Middlewares personalizados**: manejo de errores global
+- **UnitOfWork + Repositories**: control de cambios desacoplado
+- **JWT + API Key**: doble autenticación
+- **IMemoryCache**: cache en memoria para followers y timelines
 
 ---
 
-### 🌐 CDN + Edge Caching (en caso de front-end)
+### ⚡ Optimización de Lecturas con Cache
 
-- A futuro: servir assets (p.ej., imágenes de perfil o medios) vía CDN (Cloudflare, Akamai).
+La aplicación está optimizada para lecturas, priorizando la performance y la escalabilidad. Para lograrlo, se implementó un mecanismo de **caching en memoria** usando `IMemoryCache`, encapsulado en un helper reutilizable (`CacheHelper`). Este cache mejora significativamente los tiempos de respuesta para operaciones frecuentes, como:
 
----
+- 🧵 **Timeline de un usuario**: cacheado por `timeline:{userId}`, evitando rearmar la lista desde la base de datos en cada solicitud.
+- 👥 **Lista de followers/followings**: cacheado por usuario, reduciendo lecturas repetidas y joins innecesarios.
 
-### 🔍 Observabilidad
+El cache se invalida automáticamente al realizar acciones que alteren los datos (por ejemplo: publicar un tweet o seguir a un usuario).
 
-- **Logging distribuido** (Serilog + ElasticSearch).
-- **Tracing** con Jaeger o OpenTelemetry.
-- **Monitoreo** con Prometheus + Grafana.
+> Este enfoque reduce la carga sobre la base de datos, mejora la latencia de respuesta y está preparado para ser escalado fácilmente a una solución como Redis en producción.
 
----
+## 📈 Optimización de Lecturas
 
-### ✅ Resumen de Beneficios
-
-| Técnica                    | Beneficio                              |
-|---------------------------|----------------------------------------|
-| CQRS + MediatR            | Escala lectura/escritura separadamente |
-| PostgreSQL + JSONB        | Reducción de JOINs complejos           |
-| Redis/Mongo como ReadStore| Respuesta rápida                       |
-| Kafka/RabbitMQ            | Alta concurrencia sin bloqueo directo  |
-| Kubernetes                | Escalado horizontal eficiente          |
+- Se incorporó caching con `IMemoryCache` para evitar reconsultas a la base de datos en:
+  - Timeline de usuarios
+  - Seguidores y seguidos
+  - Tweets propios
+- Resultado: reducción de tiempo promedio de respuesta de **19 ms** a **7 ms**
 
 ---
 
-> Estas prácticas garantizan que la solución puede crecer a millones de usuarios concurrentes sin reescribir la arquitectura base.
+## 🔐 Seguridad
+
+- Se utiliza autenticación dual mediante **JWT Bearer Token** y **API Key**
+- Los endpoints se protegen con `[Authorize]`
+- El endpoint de login genera el JWT y se encuentra en `/api/auth/login`
+
+---
+
+## 📦 Patrón CQRS aplicado con MediatR
+
+- Comandos: PostTweetCommand, CreateUserCommand, FollowUserCommand, etc.
+- Queries: GetUserTweetsQuery, GetTimelineQuery, GetAllUsersQuery, etc.
+- Cada handler interactúa con servicios que utilizan el UnitOfWork
+
+---
+
+## 🔄 Cache
+
+Se implementó cache con `IMemoryCache` encapsulado en la clase `CacheHelper`, lo cual permite:
+
+- Cachear timelines por usuario (`timeline:{userId}`)
+- Cachear followers y followings
+- El cache se invalida en operaciones de escritura (follow, post tweet)
+
+---
+
+## 🧪 Testing y Cobertura
+
+- 100% cobertura de código (unitaria + integración)
+- Se utiliza Coverlet + ReportGenerator
+- Script automatizado `run-tests-with-coverage.ps1` genera el reporte
+
+---
+
+## 🐳 Docker (en progreso)
+
+- Se configuró el `Dockerfile` y `docker-compose.override.yml` para levantar la API y base de datos PostgreSQL
+- Por falta de tiempo no se logró completar la ejecución satisfactoria del entorno en contenedor
+
+---
+
+## 🧠 Principios y Buenas Prácticas
+
+- **Single Responsibility** por comando/servicio
+- **Separation of Concerns** entre infraestructura y dominio
+- **DRY / SOLID**
+- **Soft Delete** en usuarios (propiedad `IsDeleted`)
+- **API consistente** mediante `ApiResponse<T>` estándar
+
+---
+
+> Esta es la arquitectura actual del proyecto FS.FakeTwitter. Fue diseñada para escalar horizontalmente.

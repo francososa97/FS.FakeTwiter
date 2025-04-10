@@ -68,4 +68,20 @@ public class CacheHelper : ICacheHelper
     {
         _cache.Remove($"timeline:{userId}");
     }
+
+    public async Task<IEnumerable<string>> GetOrSetUserTweetsAsync(string userId, Func<Task<IEnumerable<string>>> factory)
+    {
+        var key = $"usertweets:{userId}";
+        var value = await factory();
+        _cache.Set(key, value, BuildCacheOptions(DefaultTtlSeconds));
+        return value;
+    }
+
+    public void RemoveUserTweetsCache(string userId)
+    {
+        var key = $"usertweets:{userId}";
+        _cache.Remove(key);
+    }
+
+
 }
