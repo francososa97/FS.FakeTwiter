@@ -121,21 +121,21 @@ FS.FakeTwitter.sln
 │       Incluye ejemplos de login, tweets, timeline, follow/unfollow.
 │
 ├── Docs/
-│   ├── 📄 api-documentation.pdf
-│   │   Documentación de la API generada con Swagger.
-│   │   Incluye ejemplos de uso y respuesta de cada endpoint.
-│   │
-│   ├── 📘 architecture.md
-│   │   Documento explicando la arquitectura Onion actual del proyecto.
-│   │   Detalla las capas: Domain, Application, Infrastructure y Api.
-│   │
-│   ├── 🧠 Bd-Escalabilidad.md
-│   │   Consideraciones técnicas para escalar la base de datos.
-│   │   Incluye detalles sobre PostgreSQL, JSONB, sharding y uso de Redis/Mongo.
-│   │
-│   └── 💼 BUSINESS.md
-│       Documento con decisiones técnicas y reglas asumidas.
-│       Incluye objetivos del sistema, tecnologías elegidas y posibles mejoras futuras.
+    ├── 📄 api-documentation.pdf
+    │   Documentación de la API generada con Swagger.
+    │   Incluye ejemplos de uso y respuesta de cada endpoint.
+    │
+    ├── 📘 architecture.md
+    │   Documento explicando la arquitectura Onion actual del proyecto.
+    │   Detalla las capas: Domain, Application, Infrastructure y Api.
+    │
+    ├── 🧠 Bd-Escalabilidad.md
+    │   Consideraciones técnicas para escalar la base de datos.
+    │   Incluye detalles sobre PostgreSQL, JSONB, sharding y uso de Redis/Mongo.
+    │
+    └── 💼 BUSINESS.md
+       Documento con decisiones técnicas y reglas asumidas.
+       Incluye objetivos del sistema, tecnologías elegidas y posibles mejoras futuras.
 ```
 
 ---
