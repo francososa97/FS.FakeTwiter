@@ -4,6 +4,31 @@
 
 ---
 
+## ✨ Nuevas funcionalidades agregadas
+
+### 🪵 Logging estructurado con Serilog
+- Configuración avanzada en `LoggingConfiguration.cs`
+- Logs diarios en `/logs/log-YYYYMMDD.txt`
+- Retención de 15 días y escritura asíncrona
+- Middleware de trazabilidad con `X-Correlation-ID`
+- Integración total con `ILogger<T>` en handlers, repositorios y servicios
+
+### 🚀 Test de performance
+
+#### 📦 BenchmarkDotNet
+- Proyecto: `FS.FakeTwiter.Benchmarks`
+- Simulación de hasta **1 millón de consultas** al handler `GetFollowersQueryHandler`
+- Benchmarks comparativos entre 100K, 1M y test masivo
+- Resultados detallados de memoria, tiempo promedio y allocations
+
+#### 🌐 k6 (carga real HTTP)
+- Endpoint público: `GET /api/test/followers/{userId}`
+- Script `load-test.js` para simular hasta **1 millón de usuarios concurrentes**
+- Métricas en tiempo real: duración, throughput, fallos y ramp-up progresivo
+- Ideal para testear comportamiento bajo estrés, middleware y resiliencia
+
+---
+
 ✅ **Nota importante**  
 Este proyecto ahora **incluye autenticación**, utilizando:
 
