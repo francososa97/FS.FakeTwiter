@@ -1,0 +1,8 @@
+2025-04-16 13:20:05.345 -03:00 [INF] ➡️ GET /swagger responded 301 in 23ms [CorrelationId: 53cfcc2d-790c-4314-91be-89d365d42ec0]
+2025-04-16 13:20:05.409 -03:00 [INF] ➡️ GET /swagger/index.html responded 200 in 46ms [CorrelationId: bd586e43-9634-40b5-a1e3-38caa2392528]
+2025-04-16 13:20:05.501 -03:00 [INF] ➡️ GET /swagger/swagger-ui.css responded 200 in 66ms [CorrelationId: 16084589-a939-4417-ad4f-3905249efff3]
+2025-04-16 13:20:05.501 -03:00 [INF] ➡️ GET /swagger/swagger-ui-standalone-preset.js responded 200 in 64ms [CorrelationId: b995c74b-6bfb-437a-a9d7-afd58cbcdc6f]
+2025-04-16 13:20:05.506 -03:00 [INF] ➡️ GET /swagger/swagger-ui-bundle.js responded 200 in 70ms [CorrelationId: 0a134dd2-76fd-448c-8a16-abc8fefb82f6]
+2025-04-16 13:20:05.997 -03:00 [INF] ➡️ GET /swagger/favicon-32x32.png responded 200 in 0ms [CorrelationId: 40375e2e-a241-4d35-acad-bce2ad3768b6]
+2025-04-16 13:20:07.469 -03:00 [INF] ➡️ GET /swagger/v1/swagger.json responded 200 in 12ms [CorrelationId: 112b470b-0b40-4e96-895c-f461fcff8273]
+2025-04-16 13:20:24.024 -03:00 [INF] ➡️ POST /api/User responded 200 in 3063ms [CorrelationId: 5feb0a41-3540-4392-b54d-60831d8a5e2d]

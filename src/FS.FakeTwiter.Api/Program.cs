@@ -21,12 +21,19 @@ using FS.FakeTwiter.Application.Features.Users.Commands.UpdateUserCommand;
 using Microsoft.AspNetCore.Authentication;
 using FS.FakeTwiter.Application.Interfaces.Cache;
 using FS.FakeTwiter.Infrastructure.Cache;
+using FS.FakeTwiter.Application.Features.Tweet.Queries.GetTimelines;
+using FS.FakeTwiter.Application.Features.Tweet.Queries.GetUserTweets;
+using Serilog;
+using Serilog.Events;
+using Polly.Extensions.Http;
+using Polly;
 
 [ExcludeFromCodeCoverage]
 public class Program
 {
     public static void Main(string[] args)
     {
+        ConfigureSerilog();
         var builder = WebApplication.CreateBuilder(args);
 
         ConfigureServices(builder);
@@ -43,9 +50,18 @@ public class Program
 
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
+        builder.Host.UseSerilog();
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddHealthChecks();
+
+        // ⛑️ Polly + HttpClient resiliente
+        builder.Services.AddHttpClient("ExternalApi", client =>
+        {
+            client.BaseAddress = new Uri("https://api.external.com"); // Cambiar por tu URL real
+        })
+        .AddPolicyHandler(GetRetryPolicy())
+        .AddPolicyHandler(GetCircuitBreakerPolicy());
 
         builder.Services.AddScoped<ITweetRepository, TweetRepository>();
         builder.Services.AddScoped<ITweetService, TweetService>();
@@ -57,6 +73,8 @@ public class Program
         builder.Services.AddMemoryCache();
         builder.Services.AddScoped<ICacheHelper, CacheHelper>();
         // FluentValidation
+        builder.Services.AddValidatorsFromAssemblyContaining<GetUserTweetsQueryValidator>();
+        builder.Services.AddValidatorsFromAssemblyContaining<GetTimelineQueryValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<PostTweetCommandValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<CreateUserCommandValidator>();
         builder.Services.AddValidatorsFromAssemblyContaining<UpdateUserCommandValidator>();
@@ -150,12 +168,16 @@ public class Program
 
     private static void ConfigureMiddleware(WebApplication app)
     {
+        // 🔒 MIDDLEWARE GLOBAL DE CORRELACIÓN
+        app.UseMiddleware<CorrelationIdMiddleware>();
+
+        app.UseMiddleware<RequestLoggingMiddleware>();
+
         app.UseMiddleware<ErrorHandlerMiddleware>();
         app.UseHttpsRedirection();
 
         app.UseRouting();
 
-        //app.UseMiddleware<ApiKeyMiddleware>();
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -204,6 +226,38 @@ public class Program
                 };
             })
             .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>("ApiKey", null);
+    }
+
+    public static void ConfigureSerilog()
+    {
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("System", LogEventLevel.Warning)
+            .MinimumLevel.Information()
+            .Enrich.FromLogContext()
+            .Enrich.WithMachineName()
+            .Enrich.WithThreadId()
+            .Enrich.WithProcessId()
+            .Enrich.WithEnvironmentName()
+            .WriteTo.Async(a => a.Console())
+            .WriteTo.Async(a => a.File("logs/log-.txt",
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 15)) // se guardan solo los últimos 15 días
+            .CreateLogger();
+    }
+
+    static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+    {
+        return HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+    }
+
+    static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
+    {
+        return HttpPolicyExtensions
+            .HandleTransientHttpError()
+            .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
     }
 
 }

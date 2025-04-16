@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{02EA681E-C
 		architecture.md = architecture.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FS.FakeTwiter.Benchmarks", "src\FS.FakeTwiter.Benchmarks\FS.FakeTwiter.Benchmarks.csproj", "{A0E5A521-02CE-E22A-F7DD-01C8602703ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{3CB74C7D-3858-D51C-B773-D4EA3D4D1864}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CB74C7D-3858-D51C-B773-D4EA3D4D1864}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CB74C7D-3858-D51C-B773-D4EA3D4D1864}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0E5A521-02CE-E22A-F7DD-01C8602703ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0E5A521-02CE-E22A-F7DD-01C8602703ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0E5A521-02CE-E22A-F7DD-01C8602703ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0E5A521-02CE-E22A-F7DD-01C8602703ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

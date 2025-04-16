@@ -21,7 +21,11 @@ public class AuthController : ControllerBase
     {
         _configuration = configuration;
     }
-
+    /// <summary>
+    /// Logueo a la api
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("login")]
     [AllowAnonymous]
     public IActionResult Login([FromBody] LoginRequest request)
