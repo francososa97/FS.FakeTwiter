@@ -9,3 +9,9 @@ obj/
 *.suo
 *.cache
 .qodo
+
+# Excluir artefactos pesados de benchmarks/k6
+**/k6 Performance Testing/resultados.csv
+**/logs/*.txt
+**/BenchmarkDotNet.Artifacts/*.log
+**/*-Benchmarks-*.log

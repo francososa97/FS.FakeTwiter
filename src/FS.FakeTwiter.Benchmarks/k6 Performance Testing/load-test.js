@@ -2,26 +2,28 @@
 import { check, sleep } from 'k6';
 
 export let options = {
-    stages: [
-        { duration: '10s', target: 100 },       // 0 → 100 usuarios
-        { duration: '30s', target: 1000 },      // 100 → 1000
-        { duration: '1m', target: 100000 },     // 1K → 100K
-        { duration: '2m', target: 1000000 },    // ⚠️ 100K → 1M
-        { duration: '30s', target: 0 }          // bajada
-    ],
+    vus: 50000, // 50.000 usuarios virtuales simultáneos
+    duration: '60s', // Mantener durante 1 minuto
     thresholds: {
-        http_req_duration: ['p(95)<1000'],   // el 95% debe estar bajo 1s
-        http_req_failed: ['rate<0.01'],      // menos del 1% fallos
+        http_req_duration: ['p(95)<1000'], // 95% bajo 1s
+        http_req_failed: ['rate<0.01'], // <1% de fallos
     }
 };
 
 export default function () {
     const userId = Math.floor(Math.random() * 1000000);
-    const res = http.get(`http://localhost:5000/api/test/followers/${userId}`);
+    const url = `http://localhost:5000/api/test/followers/${userId}`;
+
+    const headers = {
+        'X-Correlation-ID': `${__VU}-${__ITER}-${Date.now()}`
+    };
+
+    const res = http.get(url, { headers });
 
     check(res, {
-        'status is 200': (r) => r.status === 200,
+        '✅ status is 200': (r) => r.status === 200,
+        '📄 response has body': (r) => r.body && r.body.length > 0,
     });
 
-    sleep(0.1);
+    sleep(0.1); // Simula un breve delay por usuario
 }
